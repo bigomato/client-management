@@ -16,3 +16,10 @@ Base.metadata.create_all(engine)
 # create a session
 Session = sessionmaker(bind=engine)
 session = Session()
+# from sqlalchemy.schema import CreateTable
+
+# # get creation sql for the tables
+# with open("database.sql", "w") as f:
+#     for table in Base.metadata.sorted_tables:
+#         copiled = CreateTable(table).compile(engine)
+#         f.write(str(copiled) + "\n\n")
