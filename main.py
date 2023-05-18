@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 from databse import session
-from models import Person, PersonRole
+from models import *
 import requests
 import json
 
@@ -32,8 +32,10 @@ def generate_fake_persons(number_of_persons: int, session=session, seed="foobar"
 
 
 if __name__ == "__main__":
-    generate_fake_persons(10)
-    session.commit()
+    person1 = Person(name="John", surname="Doe", birthdate=date(1990, 1, 1))
+    person2 = Person(name="Jane", surname="Doe", birthdate=date(1991, 1, 1))
+    person3 = Person(name="Max", surname="Mustermann", birthdate=date(1992, 1, 1))
+    person4 = Person(name="Erika", surname="Mustermann", birthdate=date(1993, 1, 1))
 
-    for person in session.query(Person).all():
-        print(str(person) + " is a " + str(PersonRole(person.role).name))
+    session.add_all([person1, person2, person3, person4])
+    session.commit()
