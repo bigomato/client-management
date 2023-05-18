@@ -97,9 +97,11 @@ class ContactInfo(Base):
 
 class Case(Base):
     __tablename__ = "case"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
     description = Column(String, nullable=False)
+
     involved = relationship("Involved", backref="case")
     documents = relationship("Document", backref="case")
     trials = relationship("Trial", backref="case")
@@ -118,7 +120,7 @@ class Involved(Base):
     case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
     role = Column(String(50), nullable=False)
     # TODO:Enum for the Involved.role field
-    attendees = relationship("Trial", secondary=attends, back_populates="involvments")
+    attendees = relationship("Trial", secondary=attends, back_populates="attendees")
     clients = relationship(
         "Involved",
         secondary=representing,
@@ -139,10 +141,12 @@ class Involved(Base):
 class Trial(Base):
     __tablename__ = "trial"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
     name = Column(String(128), nullable=False)
     description = Column(String, nullable=False)
     date = Column(Date, nullable=False)
-    attendees = relationship("Involved", secondary=attends, back_populates="trials")
+
+    attendees = relationship("Involved", secondary=attends, back_populates="attendees")
     judgement = relationship("Judgement", backref="trial", uselist=False)
 
     def __repr__(self):
@@ -179,8 +183,8 @@ class Judgement(Base):
     # TODO: Enum for the Judgement.type fiel
     date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
-    case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
-    document = Column(Integer, ForeignKey("document.id"), nullable=True)
+    document_id = Column(Integer, ForeignKey("document.id"), nullable=True)
+    trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
