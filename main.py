@@ -39,3 +39,151 @@ if __name__ == "__main__":
 
     session.add_all([person1, person2, person3, person4])
     session.commit()
+
+    address1 = Address(
+        street="Main Street",
+        house_number="1",
+        zip_code="12345",
+        city="New York",
+        country="USA",
+    )
+    address2 = Address(
+        street="Second Street",
+        house_number="2",
+        zip_code="23456",
+        city="Los Angeles",
+        country="USA",
+    )
+
+    session.add_all([address1, address2])
+    session.commit()
+
+    # make john doe live in new york
+    john_doe = session.query(Person).filter(Person.name == "John").first()
+    adddress_new_york = (
+        session.query(Address).filter(Address.city == "New York").first()
+    )
+    john_doe.address = adddress_new_york
+    session.commit()
+
+    case1 = Case(name="Case 1", description="Description 1")
+    inv1 = Involved(person=john_doe, case=case1, role="victim")
+    inv2 = Involved(person=person2, case=case1, role="suspect")
+    inv3 = Involved(person=person3, case=case1, role="victim_lawyer")
+    inv4 = Involved(person=person4, case=case1, role="suspect_lawyer")
+
+    session.add_all([case1, inv1, inv2, inv3, inv4])
+    session.commit()
+
+    doc1 = Document(
+        name="Document 1", path="path/to/document1", case=case1, date=date(2020, 1, 1)
+    )
+    doc2 = Document(
+        name="Document 2", path="path/to/document2", case=case1, date=date(2020, 1, 2)
+    )
+    doc3 = Document(
+        name="Document 3", path="path/to/document3", case=case1, date=date(2020, 1, 3)
+    )
+
+    session.add_all([doc1, doc2, doc3])
+    session.commit()
+
+    trial1 = Trial(
+        name="Trial 1",
+        description="Description 1",
+        date=date(2020, 1, 1),
+        case=case1,
+        address=adddress_new_york,
+    )
+
+    trial2 = Trial(
+        date=date(2020, 1, 2),
+        description="Description 2",
+        case=case1,
+        address=address2,
+        name="Trial 2",
+    )
+    trial3 = Trial(
+        date=date(2020, 1, 3),
+        description="Description 3",
+        case=case1,
+        address=address1,
+        name="Trial 3",
+    )
+
+    session.add_all([trial1, trial2, trial3])
+    session.commit()
+
+    vicitim = (
+        session.query(Involved)
+        .filter(Involved.case == case1)
+        .filter(Involved.role == "victim")
+        .first()
+    )
+
+    suspect = (
+        session.query(Involved)
+        .filter(Involved.case == case1)
+        .filter(Involved.role == "suspect")
+        .first()
+    )
+
+    suspect_lawyer = (
+        session.query(Involved)
+        .filter(Involved.case == case1)
+        .filter(Involved.role == "suspect_lawyer")
+        .first()
+    )
+
+    victim_lawyer = (
+        session.query(Involved)
+        .filter(Involved.case == case1)
+        .filter(Involved.role == "victim_lawyer")
+        .first()
+    )
+
+    vicitim.lawyers.append(victim_lawyer)
+    suspect.lawyers.append(suspect_lawyer)
+
+    session.commit()
+
+    trial = (
+        session.query(Trial)
+        .join(Case)
+        .filter(Case.name == "Case 1")
+        .order_by(Trial.date)
+        .all()
+    )
+
+    # get case with first hearing
+    case = session.query(Case).join(Trial).filter(Trial.id == trial[0].id).first()
+
+    for inv in case.involved:
+        inv.attend(trial[0])
+
+    case.involved[0].attend(trial[1])
+    case.involved[1].attend(trial[1])
+    case.involved[0].attend(trial[2])
+    case.involved[1].attend(trial[2])
+    case.involved[3].attend(trial[2])
+
+    contact_joe = ContactInfo(
+        email="john@gamil.com", phone_number="123456789", person=john_doe
+    )
+
+    session.add(contact_joe)
+    session.commit()
+
+    # print(john_doe)
+
+    judgement1 = Judgement(
+        description="Description 1",
+        trial=trial[0],
+        date=date(2020, 1, 1),
+        decision="guilty",
+    )
+
+    session.add(judgement1)
+    session.commit()
+
+    print(str(case1))

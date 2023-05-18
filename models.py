@@ -49,7 +49,7 @@ class Person(Base):
     birthdate = Column(Date, nullable=True)
     adress_id = Column(Integer, ForeignKey("address.id"), nullable=True)
     contactinfos = relationship("ContactInfo", backref="person")
-    # TODO: add contact information and address
+    involvements = relationship("Involved", backref="person")
 
     def __repr__(self):
         return "<Person(name='{}', surname='{}', birthdate='{}', role='{}')>".format(
@@ -57,7 +57,10 @@ class Person(Base):
         )
 
     def __str__(self):
-        return "{} {}".format(self.name, self.surname)
+        s = "{} {}".format(self.name, self.surname)
+        for ci in self.contactinfos:
+            s += "\n\t{}".format(str(ci))
+        return s
 
 
 class Address(Base):
@@ -69,6 +72,7 @@ class Address(Base):
     street = Column(String(50), nullable=True)
     house_number = Column(String(50), nullable=True)
     persons = relationship("Person", backref="address")
+    trials = relationship("Trial", backref="address")
 
     def __repr__(self):
         return "<Address(country='{}', city='{}', zip_code='{}', street='{}', house_number='{}')>".format(
@@ -110,13 +114,37 @@ class Case(Base):
         return "<Case(name='{}', description='{}')>".format(self.name, self.description)
 
     def __str__(self):
-        return self.name
+        s = f"Case {self.name}: {self.description}:\n"
+        for involement in self.involved:
+            s += f" * {involement.person.name} {involement.person.surname}: {involement.role}\n"
+            if (
+                involement.role == "victim_lawyer"
+                or involement.role == "suspect_lawyer"
+            ) and involement.clients:
+                s += f"   Clients:\n"
+                for client in involement.clients:
+                    s += f"    * {client.person.name} {client.person.surname} ({client.role})\n"
+        s += "Documents:\n"
+        for document in self.documents:
+            s += f" * {document.name}\n"
+        s += "Trials:\n"
+        for trial in self.trials:
+            s += f" * {trial.date}: {trial.description}\n"
+            if trial.address:
+                s += f"   Address: {trial.address.street} {trial.address.house_number} {trial.address.zip_code} {trial.address.city} {trial.address.country}\n"
+            if trial.judgement:
+                s += f"   Judgement: {trial.judgement}\n"
+            if trial.attendees:
+                s += f"   Attendees:\n"
+                for involvement in trial.attendees:
+                    s += f"    * {involvement.person.name} {involvement.person.surname} ({involvement.role})\n"
+        return s
 
 
 class Involved(Base):
     __tablename__ = "involved"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    person_id = Column(Integer, ForeignKey("person.id"), nullable=False)
+    person_id = Column(Integer, ForeignKey("person.id"))
     case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
     role = Column(String(50), nullable=False)
     # TODO:Enum for the Involved.role field
@@ -137,6 +165,9 @@ class Involved(Base):
     def __str__(self):
         return "{}, {}".format(self.person, self.case)
 
+    def attend(self, trial):
+        self.attendees.append(trial)
+
 
 class Trial(Base):
     __tablename__ = "trial"
@@ -145,6 +176,7 @@ class Trial(Base):
     name = Column(String(128), nullable=False)
     description = Column(String, nullable=False)
     date = Column(Date, nullable=False)
+    address_id = Column(Integer, ForeignKey("address.id"), nullable=True)
 
     attendees = relationship("Involved", secondary=attends, back_populates="attendees")
     judgement = relationship("Judgement", backref="trial", uselist=False)
@@ -162,7 +194,7 @@ class Document(Base):
     __tablename__ = "document"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
-    description = Column(String, nullable=False)
+    description = Column(String, nullable=True)
     date = Column(Date, nullable=False)
     case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
     path = Column(String, nullable=False)  # Dateipfad
@@ -179,15 +211,15 @@ class Document(Base):
 class Judgement(Base):
     __tablename__ = "judgement"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    decision = Column(String(50), nullable=False)
     # TODO: Enum for the Judgement.type fiel
     date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
     document_id = Column(Integer, ForeignKey("document.id"), nullable=True)
     trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
+    decision = Column(String(50), nullable=True)
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
 
     def __str__(self):
-        return self.type
+        return self.description + f" ({self.decision})"
