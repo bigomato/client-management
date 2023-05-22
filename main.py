@@ -67,10 +67,10 @@ if __name__ == "__main__":
     session.commit()
 
     case1 = Case(name="Case 1", description="Description 1")
-    inv1 = Involved(person=john_doe, case=case1, role="victim")
-    inv2 = Involved(person=person2, case=case1, role="suspect")
-    inv3 = Involved(person=person3, case=case1, role="victim_lawyer")
-    inv4 = Involved(person=person4, case=case1, role="suspect_lawyer")
+    inv1 = Involved(person=john_doe, case=case1, role=InvolvementRole.victim)
+    inv2 = Involved(person=person2, case=case1, role=InvolvementRole.suspect)
+    inv3 = Involved(person=person3, case=case1, role=InvolvementRole.victim_lawyer)
+    inv4 = Involved(person=person4, case=case1, role=InvolvementRole.suspect_lawyer)
 
     session.add_all([case1, inv1, inv2, inv3, inv4])
     session.commit()
@@ -117,28 +117,28 @@ if __name__ == "__main__":
     vicitim = (
         session.query(Involved)
         .filter(Involved.case == case1)
-        .filter(Involved.role == "victim")
+        .filter(Involved.role == InvolvementRole.victim)
         .first()
     )
 
     suspect = (
         session.query(Involved)
         .filter(Involved.case == case1)
-        .filter(Involved.role == "suspect")
+        .filter(Involved.role == InvolvementRole.suspect)
         .first()
     )
 
     suspect_lawyer = (
         session.query(Involved)
         .filter(Involved.case == case1)
-        .filter(Involved.role == "suspect_lawyer")
+        .filter(Involved.role == InvolvementRole.suspect_lawyer)
         .first()
     )
 
     victim_lawyer = (
         session.query(Involved)
         .filter(Involved.case == case1)
-        .filter(Involved.role == "victim_lawyer")
+        .filter(Involved.role == InvolvementRole.victim_lawyer)
         .first()
     )
 
@@ -180,7 +180,7 @@ if __name__ == "__main__":
         description="Description 1",
         trial=trial[0],
         date=date(2020, 1, 1),
-        decision="guilty",
+        judgement=JudgemenType.condemnation,
     )
 
     session.add(judgement1)

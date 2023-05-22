@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, String, Table, TypeDecorator
+from sqlalchemy import Column, Date, Integer, String, Table, Enum
 from sqlalchemy.ext.declarative import declarative_base
 import enum
 from sqlalchemy import ForeignKey
@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 
 Base = declarative_base()
+
 
 # All models inherit from Base
 # Classes which still have to be created:
@@ -22,7 +23,49 @@ Base = declarative_base()
 # - Document
 # - Enum for the Judgement.type field (see https://michaelcho.me/article/using-python-enums-in-sqlalchemy-models)
 # - Enum for the Person.role field
+class InvolvementRole(enum.IntEnum):
+    victim_lawyer = 1
+    suspect_lawyer = 2
+    victim = 3
+    suspect = 4
+    witness = 5
+    judge = 6
+    other = 7
 
+    def __str__(self) -> str:
+        return self.name
+
+
+InvolvementRoleType: Enum = Enum(
+    InvolvementRole,
+    name="involvement_role_type",
+    create_constraint=True,
+    metadata=Base.metadata,
+    validate_strings=True,
+)
+
+
+class JudgemenType(enum.IntEnum):
+    arrangement = 1  # Vergleich
+    not_guilty = 2  # Freispruch
+    condemnation = 3  # Verurteilung
+    dismissal = 4  # Klageabweisung
+    suspension = 5  # Einstellung
+    revision = 6  # Revision
+    delay = 7  # Verzögerung
+    other = 8  # Andere
+
+    def __str__(self) -> str:
+        return self.name
+
+
+JudgementTypeType: Enum = Enum(
+    JudgemenType,
+    name="judgement_type_type",
+    create_constraint=True,
+    metadata=Base.metadata,
+    validate_strings=True,
+)
 
 # Keine Klasse weil es eine einfache m zu n Besziehung ist
 attends = Table(
@@ -118,12 +161,12 @@ class Case(Base):
         for involement in self.involved:
             s += f" * {involement.person.name} {involement.person.surname}: {involement.role}\n"
             if (
-                involement.role == "victim_lawyer"
-                or involement.role == "suspect_lawyer"
+                involement.role == InvolvementRole.victim_lawyer
+                or involement.role == InvolvementRole.suspect_lawyer
             ) and involement.clients:
                 s += f"   Clients:\n"
                 for client in involement.clients:
-                    s += f"    * {client.person.name} {client.person.surname} ({client.role})\n"
+                    s += f"    * {client.person.name} {client.person.surname} ({InvolvementRole(client.role)})\n"
         s += "Documents:\n"
         for document in self.documents:
             s += f" * {document.name}\n"
@@ -137,7 +180,7 @@ class Case(Base):
             if trial.attendees:
                 s += f"   Attendees:\n"
                 for involvement in trial.attendees:
-                    s += f"    * {involvement.person.name} {involvement.person.surname} ({involvement.role})\n"
+                    s += f"    * {involvement.person.name} {involvement.person.surname} ({InvolvementRole(involvement.role)})\n"
         return s
 
 
@@ -146,8 +189,7 @@ class Involved(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     person_id = Column(Integer, ForeignKey("person.id"))
     case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
-    role = Column(String(50), nullable=False)
-    # TODO:Enum for the Involved.role field
+    role = Column(InvolvementRoleType, nullable=False)
     attendees = relationship("Trial", secondary=attends, back_populates="attendees")
     clients = relationship(
         "Involved",
@@ -211,15 +253,14 @@ class Document(Base):
 class Judgement(Base):
     __tablename__ = "judgement"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    # TODO: Enum for the Judgement.type fiel
     date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
     document_id = Column(Integer, ForeignKey("document.id"), nullable=True)
     trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
-    decision = Column(String(50), nullable=True)
+    judgement = Column(JudgementTypeType, nullable=True)
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
 
     def __str__(self):
-        return self.description + f" ({self.decision})"
+        return self.description + f" ({self.judgement})"
