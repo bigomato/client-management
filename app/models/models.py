@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Date, Integer, String, Table, Enum, ForeignKey
+from sqlalchemy import Column, Date, Integer, String, Table, Enum, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 import enum
 from app import db
@@ -20,6 +20,24 @@ class InvolvementRole(enum.IntEnum):
 InvolvementRoleType: Enum = Enum(
     InvolvementRole,
     name="involvement_role_type",
+    create_constraint=True,
+    metadata=db.metadata,
+    validate_strings=True,
+)
+
+
+class CaseStatus(enum.IntEnum):
+    won = 1
+    lost = 2
+    ongoing = 3
+
+    def __str__(self) -> str:
+        return self.name
+
+
+CaseStatusType: Enum = Enum(
+    CaseStatus,
+    name="case_status_type",
     create_constraint=True,
     metadata=db.metadata,
     validate_strings=True,
@@ -72,6 +90,8 @@ class Person(db.Model):
     surname = Column(String(50), nullable=False)
     birthdate = Column(Date, nullable=True)
     adress_id = Column(Integer, ForeignKey("address.id"), nullable=True)
+    our_lawyer = Column(Boolean, nullable=False, default=False)
+    our_client = Column(Boolean, nullable=False, default=False)
     contactinfos = relationship("ContactInfo", backref="person")
     involvements = relationship("Involved", backref="person")
 
@@ -129,10 +149,10 @@ class Case(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
     description = Column(String, nullable=False)
-
     involved = relationship("Involved", backref="case")
     documents = relationship("Document", backref="case")
     trials = relationship("Trial", backref="case")
+    case_status = Column(CaseStatusType, nullable=False, default=CaseStatus.ongoing)
 
     def __repr__(self):
         return "<Case(name='{}', description='{}')>".format(self.name, self.description)

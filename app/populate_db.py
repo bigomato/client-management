@@ -36,9 +36,13 @@ session = db.session
 
 
 def populate_db():
-    person1 = Person(name="John", surname="Doe", birthdate=date(1990, 1, 1))
+    person1 = Person(
+        name="John", surname="Doe", birthdate=date(1990, 1, 1), our_client=True
+    )
     person2 = Person(name="Jane", surname="Doe", birthdate=date(1991, 1, 1))
-    person3 = Person(name="Max", surname="Mustermann", birthdate=date(1992, 1, 1))
+    person3 = Person(
+        name="Max", surname="Mustermann", birthdate=date(1992, 1, 1), our_lawyer=True
+    )
     person4 = Person(name="Erika", surname="Mustermann", birthdate=date(1993, 1, 1))
 
     session.add_all([person1, person2, person3, person4])
