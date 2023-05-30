@@ -1,28 +1,9 @@
-from sqlalchemy import Column, Date, Integer, String, Table, Enum
-from sqlalchemy.ext.declarative import declarative_base
-import enum
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, Date, Integer, String, Table, Enum, ForeignKey
 from sqlalchemy.orm import relationship
+import enum
+from app import db
 
 
-Base = declarative_base()
-
-
-# All models inherit from Base
-# Classes which still have to be created:
-# - Person (needs to be extended with contact information and address)
-# - Address
-# - Contact
-# - Case
-# - Trial
-# - Plaintiff
-# - Defendant
-# - DefendantLawyer
-# - PlaintiffLawyer
-# - Judgement
-# - Document
-# - Enum for the Judgement.type field (see https://michaelcho.me/article/using-python-enums-in-sqlalchemy-models)
-# - Enum for the Person.role field
 class InvolvementRole(enum.IntEnum):
     victim_lawyer = 1
     suspect_lawyer = 2
@@ -40,7 +21,7 @@ InvolvementRoleType: Enum = Enum(
     InvolvementRole,
     name="involvement_role_type",
     create_constraint=True,
-    metadata=Base.metadata,
+    metadata=db.metadata,
     validate_strings=True,
 )
 
@@ -63,14 +44,14 @@ JudgementTypeType: Enum = Enum(
     JudgemenType,
     name="judgement_type_type",
     create_constraint=True,
-    metadata=Base.metadata,
+    metadata=db.metadata,
     validate_strings=True,
 )
 
 # Keine Klasse weil es eine einfache m zu n Besziehung ist
 attends = Table(
     "attends",
-    Base.metadata,
+    db.metadata,
     Column("trial_id", Integer, ForeignKey("trial.id")),
     Column("person_id", Integer, ForeignKey("involved.id")),
 )
@@ -78,13 +59,13 @@ attends = Table(
 
 representing = Table(
     "representing",
-    Base.metadata,
+    db.metadata,
     Column("client_id", Integer, ForeignKey("involved.id")),
     Column("lawyer_id", Integer, ForeignKey("involved.id")),
 )
 
 
-class Person(Base):
+class Person(db.Model):
     __tablename__ = "person"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
@@ -106,7 +87,7 @@ class Person(Base):
         return s
 
 
-class Address(Base):
+class Address(db.Model):
     __tablename__ = "address"
     id = Column(Integer, primary_key=True, autoincrement=True)
     country = Column(String(50), nullable=False)
@@ -126,7 +107,7 @@ class Address(Base):
         return "{}, {} {}".format(self.country, self.city, self.zip_code)
 
 
-class ContactInfo(Base):
+class ContactInfo(db.Model):
     __tablename__ = "contact_info"
     id = Column(Integer, primary_key=True, autoincrement=True)
     phone_number = Column(String(50), nullable=False)
@@ -142,7 +123,7 @@ class ContactInfo(Base):
         return "{}, {}".format(self.email, self.phone_number)
 
 
-class Case(Base):
+class Case(db.Model):
     __tablename__ = "case"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -184,7 +165,7 @@ class Case(Base):
         return s
 
 
-class Involved(Base):
+class Involved(db.Model):
     __tablename__ = "involved"
     id = Column(Integer, primary_key=True, autoincrement=True)
     person_id = Column(Integer, ForeignKey("person.id"))
@@ -211,7 +192,7 @@ class Involved(Base):
         self.attendees.append(trial)
 
 
-class Trial(Base):
+class Trial(db.Model):
     __tablename__ = "trial"
     id = Column(Integer, primary_key=True, autoincrement=True)
     case_id = Column(Integer, ForeignKey("case.id"), nullable=False)
@@ -221,7 +202,7 @@ class Trial(Base):
     address_id = Column(Integer, ForeignKey("address.id"), nullable=True)
 
     attendees = relationship("Involved", secondary=attends, back_populates="attendees")
-    judgement = relationship("Judgement", backref="trial", uselist=False)
+    judgement = relationship("Judgement", uselist=False, backref="trial")
 
     def __repr__(self):
         return "<Trial(name='{}', description='{}')>".format(
@@ -232,7 +213,7 @@ class Trial(Base):
         return self.name
 
 
-class Document(Base):
+class Document(db.Model):
     __tablename__ = "document"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
@@ -250,7 +231,7 @@ class Document(Base):
         return self.name
 
 
-class Judgement(Base):
+class Judgement(db.Model):
     __tablename__ = "judgement"
     id = Column(Integer, primary_key=True, autoincrement=True)
     date = Column(Date, nullable=False)
@@ -258,6 +239,7 @@ class Judgement(Base):
     document_id = Column(Integer, ForeignKey("document.id"), nullable=True)
     trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
     judgement = Column(JudgementTypeType, nullable=True)
+    # FIXME: add a proper connection between trial and judgement so you can use judgement.trial
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
