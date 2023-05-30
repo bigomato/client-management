@@ -10,6 +10,9 @@ def create_app():
     app.config["POPULATE_DATABASE"] = False
 
     db.init_app(app)
+    from .views.main import main
+
+    app.register_blueprint(main)
 
     from app.models.models import (
         attends,
