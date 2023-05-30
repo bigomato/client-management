@@ -1,0 +1,58 @@
+{% set company_name = "Call for Saul" %}
+
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.52.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>
+        {% block title %}
+        {{ company_name }}
+        {% endblock %}
+    </title>
+</head>
+
+<body>
+    <div class="container mx-auto mt-8">
+        <div class="navbar bg-base-300 rounded-lg shadow-md">
+            <div class="navbar-start">
+            </div>
+            <div class="navbar-center">
+                <a class="btn btn-ghost normal-case text-xl">{{ company_name }}</a>
+                <!-- TODO:Name -->
+            </div>
+            <div class="navbar-end">
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h7" />
+                        </svg>
+                    </label>
+                    <ul tabindex="0"
+                        class="menu menu-compact dropdown-content mt-3 p-2 shadow-2xl bg-base-200 rounded-box w-52">
+                        <li><a>Anwälte</a></li>
+                        <li><a>Fälle</a></li>
+                        <li><a>Mandanten</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TODO: Add Flash Message Support -->
+
+    <div class="container mt-8 mx-auto">
+        {% block content %}
+        <h1 class="text-3xl font-bold">No Content to be found</h1>
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>
