@@ -72,12 +72,8 @@
             </tbody>
         </table>
 
-        <div class="btn-group my-5 mx-auto">
-            <a href="" class="btn btn-sm btn-accent">1</a>
-            <a href="" class="btn btn-sm">2</a>
-            <a href="" class="btn btn-sm">3</a>
-            <a href="" class="btn btn-sm">4</a>
-        </div>
+        {% from 'macros/pagination.html' import paginate %}
+        {{ paginate(lawyers, 'lawyers.lawyers_page') }}
 
     </div>
 </div>
