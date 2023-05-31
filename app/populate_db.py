@@ -12,30 +12,44 @@ def generate_fake_persons(number_of_persons: int, db=db, seed="foobar"):
         "https://randomuser.me/api/",
         params={
             "results": number_of_persons,
-            "inc": "name, dob",
-            "nat": "de",
+            "inc": "name, dob, location, phone, email",
+            "nat": "DE",
             "seed": seed,
         },
     )
     data = json.loads(res.text)
-    persons = []
+    entries = []
     for person in data["results"]:
-        persons.append(
-            Person(
-                name=person["name"]["first"],
-                surname=person["name"]["last"],
-                birthdate=datetime.strptime(
-                    person["dob"]["date"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                ),
-            )
+        p = Person(
+            name=person["name"]["first"],
+            surname=person["name"]["last"],
+            birthdate=datetime.strptime(person["dob"]["date"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+            our_client=True,
         )
-    db.session.add_all(persons)
+        adress = Address(
+            street=person["location"]["street"]["name"],
+            house_number=person["location"]["street"]["number"],
+            zip_code=person["location"]["postcode"],
+            city=person["location"]["city"],
+            country=person["location"]["country"],
+        )
+        p.address = adress
+        contact = ContactInfo(
+            phone_number=person["phone"],
+            email=person["email"],
+            person=p,
+        )
+        entries.append(p)
+        entries.append(adress)
+        entries.append(contact)
+    db.session.add_all(entries)
 
 
 session = db.session
 
 
 def populate_db():
+    generate_fake_persons(19)
     person1 = Person(
         name="John", surname="Doe", birthdate=date(1990, 1, 1), our_client=True
     )

@@ -1,4 +1,4 @@
-{% set company_name = "Call for Saul" %}
+{% set company_name = "Mandantenverwaltung" %}
 
 <!DOCTYPE html>
 <html lang="de">
@@ -38,7 +38,7 @@
                         class="menu menu-compact dropdown-content mt-3 p-2 shadow-2xl bg-base-200 rounded-box w-52">
                         <li><a>Anwälte</a></li>
                         <li><a>Fälle</a></li>
-                        <li><a>Mandanten</a></li>
+                        <li><a href="{{ url_for('clients.clients_page')}}">Mandanten</a></li>
                     </ul>
                 </div>
             </div>
