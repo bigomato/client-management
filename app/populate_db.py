@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import random
 import requests
 import json
 
@@ -6,7 +7,9 @@ from app import db
 from app.models.models import *
 
 
-def generate_fake_persons(number_of_persons: int, db=db, seed="foobar"):
+def generate_fake_persons(
+    number_of_persons: int, db=db, seed="foobar", use_randomuser=True
+):
     # https://randomuser.me/api/?results={number_of_persons}
     res = requests.get(
         "https://randomuser.me/api/",
@@ -20,11 +23,13 @@ def generate_fake_persons(number_of_persons: int, db=db, seed="foobar"):
     data = json.loads(res.text)
     entries = []
     for person in data["results"]:
+        r = random.randint(0, 1)
         p = Person(
             name=person["name"]["first"],
             surname=person["name"]["last"],
             birthdate=datetime.strptime(person["dob"]["date"], "%Y-%m-%dT%H:%M:%S.%fZ"),
-            our_client=True,
+            our_client=r,
+            our_lawyer=not r,
         )
         adress = Address(
             street=person["location"]["street"]["name"],
@@ -49,7 +54,7 @@ session = db.session
 
 
 def populate_db():
-    generate_fake_persons(19)
+    generate_fake_persons(200)
     person1 = Person(
         name="John", surname="Doe", birthdate=date(1990, 1, 1), our_client=True
     )
