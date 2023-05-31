@@ -12,9 +12,11 @@ def create_app():
     db.init_app(app)
     from .views.main import main
     from .views.clients import clients
+    from .views.lawyers import lawyers
 
     app.register_blueprint(main)
     app.register_blueprint(clients)
+    app.register_blueprint(lawyers)
 
     from app.models.models import (
         attends,
