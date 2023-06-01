@@ -32,10 +32,11 @@
             </thead>
             <tbody>
                 {%for case in cases%}
-                <tr class="hover">
-                    <th>{{case.name}}</th>
-                    <th>{{case.description}}</th>
-                    <th>{% if case.case_status == CaseStatus.won %}
+                <tr class="hover" onclick="window.location='{{url_for('cases.case', case_id=case.id)}}';"
+                    style="cursor: pointer;">
+                    <td>{{case.name}}</td>
+                    <td>{{case.description}}</td>
+                    <td>{% if case.case_status == CaseStatus.won %}
                         <div class="badge badge-success">Gewonnen</div>
 
                         {% elif case.case_status == CaseStatus.ongoing %}
@@ -43,7 +44,7 @@
                         {% else %}
                         <div class="badge badge-error">Verloren</div>
                         {% endif %}
-                    </th>
+                    </td>
                     {%endfor%}
                 </tr>
             </tbody>
