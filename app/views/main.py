@@ -15,7 +15,7 @@ def start_page():
         db.session.query(Case).filter(Case.case_status == CaseStatus.won).count()
     )
     cases_lost = (
-        db.session.query(Case).filter(Case.case_status == CaseStatus.won).count()
+        db.session.query(Case).filter(Case.case_status == CaseStatus.lost).count()
     )
     return render_template(
         "index.html",
