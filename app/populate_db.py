@@ -60,7 +60,6 @@ def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
             name=f"Case {i}", description=f"Description {i}", case_status=status
         )
         db.session.add(case)
-        db.session.commit()
 
         # involvements
         for j in range(2):
@@ -84,7 +83,6 @@ def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
             )
             inv.lawyers.append(lawyer_inv)
             db.session.add(inv, lawyer_inv)
-            db.session.commit()
 
         # trials
         for j in range(2):
@@ -96,16 +94,14 @@ def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
                 address=random.choice(addresses),
             )
             db.session.add(trial)
-            db.session.commit()
 
             judgement = Judgement(
                 description=f"Judgement {j} for trial {trial.id}",
-                trial_id=trial.id,
+                trial=trial,
                 date=date.today(),
                 judgement=JudgemenType.other,
             )
             db.session.add(judgement)
-            db.session.commit()
 
         # documents
         for k in range(2):
@@ -117,19 +113,20 @@ def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
                 case=case,
             )
             db.session.add(doc)
-            db.session.commit()
+
+    db.session.commit()
 
 
 session = db.session
 
 
 def populate_db():
+    print("Populating database...")
     generate_fake_persons(200)
-    generate_fake_cases(30)
+    print("Generated fake persons")
+    generate_fake_cases(100)
+    print("Generated fake cases")
     # get all cases
-    cases = session.query(Case).all()
-    for c in cases:
-        print(c)
     person1 = Person(
         name="John", surname="Doe", birthdate=date(1990, 1, 1), our_client=True
     )
