@@ -16,6 +16,25 @@ class InvolvementRole(enum.IntEnum):
     def __str__(self) -> str:
         return self.name
 
+    def display(self) -> str:
+        match self:
+            case InvolvementRole.victim_lawyer:
+                return "Anwalt des Klägers"
+            case InvolvementRole.suspect_lawyer:
+                return "Anwalt des Angeklagten"
+            case InvolvementRole.victim:
+                return "Kläger"
+            case InvolvementRole.suspect:
+                return "Angeklagter"
+            case InvolvementRole.witness:
+                return "Zeuge"
+            case InvolvementRole.judge:
+                return "Richter"
+            case InvolvementRole.other:
+                return "Sonstige"
+            case _:
+                return "Unbekannt"
+
 
 InvolvementRoleType: Enum = Enum(
     InvolvementRole,
@@ -56,6 +75,27 @@ class JudgemenType(enum.IntEnum):
 
     def __str__(self) -> str:
         return self.name
+
+    def display(self) -> str:
+        match self:
+            case JudgemenType.arrangement:
+                return "Vergleich"
+            case JudgemenType.not_guilty:
+                return "Freispruch"
+            case JudgemenType.condemnation:
+                return "Verurteilung"
+            case JudgemenType.dismissal:
+                return "Klageabweisung"
+            case JudgemenType.suspension:
+                return "Einstellung"
+            case JudgemenType.revision:
+                return "Revision"
+            case JudgemenType.delay:
+                return "Verzögerung"
+            case JudgemenType.other:
+                return "Andere"
+            case _:
+                return "Unbekannt"
 
 
 JudgementTypeType: Enum = Enum(
@@ -260,6 +300,7 @@ class Judgement(db.Model):
     trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
     judgement = Column(JudgementTypeType, nullable=True)
     # FIXME: add a proper connection between trial and judgement so you can use judgement.trial
+    document = relationship("Document", uselist=False, backref="judgement")
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
