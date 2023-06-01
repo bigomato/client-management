@@ -32,7 +32,7 @@
             </thead>
             <tbody>
                 {%for case in cases%}
-                <tr>
+                <tr class="hover">
                     <th>{{case.name}}</th>
                     <th>{{case.description}}</th>
                     <th>{% if case.case_status == CaseStatus.won %}
