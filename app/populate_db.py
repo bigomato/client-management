@@ -50,11 +50,86 @@ def generate_fake_persons(
     db.session.add_all(entries)
 
 
+def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
+    persons = db.session.query(Person).filter(Person.our_client == True).all()
+    lawyers = db.session.query(Person).filter(Person.our_lawyer == True).all()
+    addresses = db.session.query(Address).all()
+    for i in range(number_of_cases):
+        case = Case(
+            name=f"Case {i}",
+            description=f"Description {i}",
+        )
+        db.session.add(case)
+        db.session.commit()
+
+        # involvements
+        for j in range(2):
+            person = random.choice(persons)
+            lawyer = random.choice(lawyers)
+            r = InvolvementRole.victim if j % 2 == 0 else InvolvementRole.suspect
+            lr = (
+                InvolvementRole.victim_lawyer
+                if j % 2 == 0
+                else InvolvementRole.suspect_lawyer
+            )
+            inv = Involved(
+                person=person,
+                case=case,
+                role=r,
+            )
+            lawyer_inv = Involved(
+                person=lawyer,
+                case=case,
+                role=lr,
+            )
+            inv.lawyers.append(lawyer_inv)
+            db.session.add(inv, lawyer_inv)
+            db.session.commit()
+
+        # trials
+        for j in range(2):
+            trial = Trial(
+                name=f"Trial {j}",
+                description=f"Description {j}",
+                date=date.today(),
+                case=case,
+                address=random.choice(addresses),
+            )
+            db.session.add(trial)
+            db.session.commit()
+
+            judgement = Judgement(
+                description=f"Judgement {j} for trial {trial.id}",
+                trial_id=trial.id,
+                date=date.today(),
+                judgement=JudgemenType.other,
+            )
+            db.session.add(judgement)
+            db.session.commit()
+
+        # documents
+        for k in range(2):
+            doc = Document(
+                name=f"Document {k} for case {case.name}",
+                description=f"This is document {k} for case {case.name}",
+                path=f"/docs/{case.name}/document_{k}.pdf",
+                date=date.today(),
+                case=case,
+            )
+            db.session.add(doc)
+            db.session.commit()
+
+
 session = db.session
 
 
 def populate_db():
     generate_fake_persons(200)
+    generate_fake_cases(3)
+    # get all cases
+    cases = session.query(Case).all()
+    for c in cases:
+        print(c)
     person1 = Person(
         name="John", surname="Doe", birthdate=date(1990, 1, 1), our_client=True
     )
