@@ -55,9 +55,9 @@ def generate_fake_cases(number_of_cases, db=db, seed="foobar"):
     lawyers = db.session.query(Person).filter(Person.our_lawyer == True).all()
     addresses = db.session.query(Address).all()
     for i in range(number_of_cases):
+        status = random.choice([CaseStatus.ongoing, CaseStatus.won, CaseStatus.lost])
         case = Case(
-            name=f"Case {i}",
-            description=f"Description {i}",
+            name=f"Case {i}", description=f"Description {i}", case_status=status
         )
         db.session.add(case)
         db.session.commit()
@@ -125,7 +125,7 @@ session = db.session
 
 def populate_db():
     generate_fake_persons(200)
-    generate_fake_cases(3)
+    generate_fake_cases(30)
     # get all cases
     cases = session.query(Case).all()
     for c in cases:
