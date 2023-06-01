@@ -7,17 +7,18 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config["POPULATE_DATABASE"] = False
+    app.config["POPULATE_DATABASE"] = True
 
     db.init_app(app)
     from .views.main import main
     from .views.clients import clients
     from .views.lawyers import lawyers
+    from .views.cases import cases
 
     app.register_blueprint(main)
     app.register_blueprint(clients)
     app.register_blueprint(lawyers)
-
+    app.register_blueprint(cases)
     from app.models.models import (
         attends,
         representing,

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Fälle
+{% endblock %}
+{% block content %}
+
+<div class="grid grid-cols-3">
+    <div>
+        <input type="text" placeholder="Suchen"
+            class="input input-bordered w-24 focus:w-full transition-width duration-300 ease-in-out" />
+    </div>
+    <div>
+        <div class="text-4xl font-bold text-accent text-center">
+            Fälle
+        </div>
+    </div>
+    <div class="text-end">
+        <a href="" class="btn btn-base-content">Fälle Anlegen</a>
+    </div>
+</div>
+
+<div class="flex flex-col mt-5">
+
+    <div class="overflow-x-auto text-center mt-5 ">
+        <table class="table table-compact w-full">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for case in cases%}
+                <tr>
+                    <th>{{case.name}}</th>
+                    <th>{{case.description}}</th>
+                    <th>{% if case.case_status == CaseStatus.won %}
+                        <div class="badge badge-success">Gewonnen</div>
+
+                        {% elif case.case_status == CaseStatus.ongoing %}
+                        <div class="badge badge-info">Laufend</div>
+                        {% else %}
+                        <div class="badge badge-error">Verloren</div>
+                        {% endif %}
+                    </th>
+                    {%endfor%}
+                </tr>
+            </tbody>
+        </table>
+
+        {% from 'macros/pagination.html' import paginate %}
+        {{ paginate(cases, 'cases.cases_page') }}
+
+    </div>
+
+    {% endblock %}
