@@ -14,3 +14,9 @@ def cases_page():
     if page > cases.pages:
         return redirect(url_for("cases.cases_page", page=cases.pages))
     return render_template("cases.html", CaseStatus=CaseStatus, cases=cases)
+
+
+@cases.route("/cases/<int:case_id>")
+def case(case_id):
+    case = db.session.query(Case).get_or_404(case_id)
+    return render_template("case.html", case=case, CaseStatus=CaseStatus)

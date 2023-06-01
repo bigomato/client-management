@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Fälle
+{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3">
+    <div>
+        {% if case.case_status == CaseStatus.won %}
+        <div class="badge badge-success badge-lg">Gewonnen</div>
+        {% elif case.case_status == CaseStatus.ongoing %}
+        <div class="badge badge-info badge-lg">Laufend</div>
+        {% else %}
+        <div class="badge badge-error badge-lg">Verloren</div>
+        {% endif %}
+    </div>
+    <div>
+        <div class="text-4xl font-bold text-accent text-center">
+            {{ case.name }}
+        </div>
+    </div>
+    <div class="text-end">
+        <a href="" class="btn btn-base-content">
+            Bearbeiten
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="w-5 h-5 ml-2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+        </a>
+    </div>
+</div>
+
+<div class="felx flex-col mt-5">
+    <!-- description, list of involved, documents, trials, status, -->
+
+    <div class="form-control">
+        <label class="label">
+            <span class="label-text">Beschreibung</span>
+        </label>
+        <input type="text" class="input input-bordered" disabled value="{{ case.description }}"
+            style="cursor: default;" />
+    </div>
+    <!-- two col grid -->
+
+    <div class="grid grid-cols-2 gap-4 my-5">
+        <div>
+            <div class="card bg-base-200 shadow h-fit">
+                <div class="card-body">
+                    <h2 class="card-title">Involviete Personen</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table table-compact w-full shadow">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Rolle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for person in case.involved %}
+                                <tr class="hover">
+                                    <th>{{ person.person.name }} {{ person.person.surname }}</th>
+                                    <th>
+                                        <div class="badge badge-outline">
+                                            {{ person.role.display() }}
+                                        </div>
+                                    </th>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-200 shadow h-fit mt-4">
+                <div class="card-body">
+                    <h2 class="card-title">Dokumente</h2>
+                    <div class="overflow-x-auto">
+                        <table class="table table-compact w-full shadow">
+                            <thead>
+                                <tr>
+                                    <th>Pfad</th>
+                                    <th>Name</th>
+                                    <th>Datum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for doc in case.documents %}
+                                <tr class="hover">
+                                    <th>{{ doc.path }}</th>
+                                    <th>
+                                        <div class="dropdown dropdown-hover dropdown-top dropdown-end">
+                                            <label tabindex="0" class="m-1">{{ doc.name }}</label>
+                                            <ul tabindex="0"
+                                                class="dropdown-content p-4 shadow-xl bg-base-100 rounded-box w-fit">
+                                                {{doc.description}}
+                                            </ul>
+                                        </div>
+                                    </th>
+                                    <th>{{ doc.date }}</th>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-base-200 shadow">
+            <div class="card-body">
+                <h2 class="card-title">Verhandlungen</h2>
+                <div class="overflow-x-auto">
+                    {% for trial in case.trials %}
+                    <div class="card bg-base-100 mb-3">
+                        <div class="card-body p-4">
+                            <h3 class="card-title text-lg grid grid-cols-2">
+                                <span>{{trial.name}}</span>
+                                <div class="text-right">
+                                    <div class="badge badge-outline">{{trial.date}}</div>
+                                </div>
+                            </h3>
+                            <div class="overflow-x-auto">
+                                {% if trial.judgement is not none %}
+                                <div class="card bg-info-content my-4">
+                                    <div class="card-body p-4">
+                                        <h3 class="card-title text-lg">
+                                            <span>{{trial.judgement.judgement.display()}}</span>
+                                        </h3>
+                                        {{ trial.judgement.description }}
+                                        {% if trial.judgement.document is not none %}
+                                        <br> {{trial.judgement.document.name}} ({{trial.judgement.document.path}})
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {{ trial.description }} <br>
+                                {{ trial.address }}
+
+                                {% if trial.attendees != [] %}
+                                <table class="table table-compact w-full shadow">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Rolle</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for person in trial.attendees %}
+                                        <tr class="hover">
+                                            <th>{{ person.person.name }} {{ person.person.surname }}</th>
+                                            <th>
+                                                <div class="badge badge-outline">
+                                                    {{ person.role.display() }}
+                                                </div>
+                                            </th>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
