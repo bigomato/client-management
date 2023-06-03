@@ -7,7 +7,8 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite"
-    app.config["POPULATE_DATABASE"] = True
+    app.config["POPULATE_DATABASE"] = False
+    app.config["SECRET_KEY"] = "secret"
 
     db.init_app(app)
     from .views.main import main

@@ -1,0 +1,18 @@
+{% macro feedback(singular, plural, search, pagination) %}
+{% if pagination.total == 1 %}
+<span>
+    Es wurde {{ pagination.total }} {{singular}} mit dem Suchbegriff "{{ search }}" gefunden.
+</span>
+{% elif search != "" %}
+<span>
+    Es wurden {{ pagination.total }} {{plural}} mit dem Suchbegriff "{{ search }}" gefunden.
+</span>
+{% endif %}
+{% endmacro %}
+
+{% macro search_field(s, pagination) %}
+<input type="text" placeholder="Suchen" name="search"
+    class="input input-bordered w-24 focus:w-full transition-width duration-300 ease-in-out" value="{{ s }}">
+<!-- hidden input for page -->
+<input type="hidden" name="page" value="{{ pagination.page }}">
+{% endmacro %}

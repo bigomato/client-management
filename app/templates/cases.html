@@ -3,12 +3,14 @@
 {{ company_name }} - Fälle
 {% endblock %}
 {% block content %}
+{% from 'macros/search.html' import feedback, search_field %}
 
 <div class="grid grid-cols-3">
-    <div>
-        <input type="text" placeholder="Suchen"
-            class="input input-bordered w-24 focus:w-full transition-width duration-300 ease-in-out" />
-    </div>
+    <form method="GET">
+        <div>
+            {{ search_field(search, cases) }}
+        </div>
+    </form>
     <div>
         <div class="text-4xl font-bold text-accent text-center">
             Fälle
@@ -18,7 +20,7 @@
         <a href="" class="btn btn-base-content">Fälle Anlegen</a>
     </div>
 </div>
-
+{{ feedback("Fall", "Fälle", search, cases) }}
 <div class="flex flex-col mt-5">
 
     <div class="overflow-x-auto text-center mt-5 ">
@@ -51,7 +53,7 @@
         </table>
 
         {% from 'macros/pagination.html' import paginate %}
-        {{ paginate(cases, 'cases.cases_page') }}
+        {{ paginate(cases, 'cases.cases_page', search=search) }}
 
     </div>
 

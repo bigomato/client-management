@@ -4,7 +4,7 @@
     {% if p is none %}
     <a class="btn join-item btn-sm">...</a>
     {% else %}
-    <a href="{{ url_for(url, page=p) }}"
+    <a href="{{ url_for(url, page=p, **kwargs) }}"
         class="btn join-item btn-sm {{ 'btn-primary' if pagination_obj.page == p}}">{{p}}</a>
     {% endif %}
     {% endfor %}

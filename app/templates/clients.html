@@ -3,11 +3,14 @@
 {{ company_name }} - Mandanten
 {% endblock %}
 {% block content %}
+{% from 'macros/search.html' import feedback, search_field %}
+
 <div class="grid grid-cols-3">
-    <div>
-        <input type="text" placeholder="Suchen"
-            class="input input-bordered w-24 focus:w-full transition-width duration-300 ease-in-out" />
-    </div>
+    <form method="GET">
+        <div>
+            {{ search_field(search, clients) }}
+        </div>
+    </form>
     <div>
         <div class="text-4xl font-bold text-accent text-center">
             Mandanten
@@ -17,6 +20,7 @@
         <a href="{{ url_for('clients.create_client')}}" class="btn btn-base-content">Mandanten Anlegen</a>
     </div>
 </div>
+{{ feedback("Mandant", "Mandanten", search, clients) }}
 <div class="flex flex-col mt-5">
     <!-- <div class="flex justify-end"></div> -->
     <div class="overflow-x-auto text-center mt-5">
@@ -71,7 +75,7 @@
             </tbody>
         </table>
         {% from 'macros/pagination.html' import paginate %}
-        {{ paginate(clients, 'clients.clients_page') }}
+        {{ paginate(clients, 'clients.clients_page', search=search) }}
     </div>
 </div>
 
