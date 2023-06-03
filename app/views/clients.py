@@ -14,3 +14,8 @@ def clients_page():
     if page > clients.pages:
         return redirect(url_for("clients.clients_page", page=clients.pages))
     return render_template("clients.html", clients=clients)
+
+
+@clients.route("/clients/create")
+def create_client():
+    return render_template("create_client.html")

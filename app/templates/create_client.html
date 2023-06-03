@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Mandanten Anlegen
+{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3">
+    <div>
+    </div>
+    <div>
+        <div class="text-4xl font-bold text-accent text-center">
+            Mandanten Anlegen
+        </div>
+    </div>
+    <div class="text-end">
+        <a href="" class="btn btn-success">Speichern</a>
+    </div>
+</div>
+
+<div class="card text-center mt-5 shadow ">
+    <div class="card-body">
+        <h2 class="card-title">Persönliche informationen</h2>
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Vorname</span>
+            </label>
+            <input type="text" placeholder="Name eingeben" class="input input-bordered w-full max-w-xs" />
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+Name,Nachname,Geburtsdatum,
+
+Kontakt:Phonenumber,E-mail
+
+Adresse:Land,Stadt,zip-code,Straße,Hausnummer
