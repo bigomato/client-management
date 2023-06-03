@@ -21,21 +21,21 @@
 <div class="flex flex-col mt-5">
     <!-- <div class="flex justify-end"></div> -->
     <div class="overflow-x-auto text-center mt-5">
-        <table class="table table-compact w-full">
+        <table class="table table-sm">
             <thead>
-                <tr>
-                    <th>Name</th>
+                <tr class="bg-base-200">
+                    <th class="rounded-tl-lg">Name</th>
                     <th>Nachname</th>
                     <th>Geburtsdatum</th>
                     <th>Adresse</th>
                     <th>Telefonnummer</th>
-                    <th>Email</th>
+                    <th class="rounded-tr-lg">Email</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for lawyer in lawyers %}
-                <tr class="hover">
+                <tr class="hover:bg-base-200">
                     <td>{{ lawyer.name }}</td>
                     <td>{{ lawyer.surname }}</td>
                     <td>{{ lawyer.birthdate }}</td>

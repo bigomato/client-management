@@ -48,16 +48,16 @@
                 <div class="card-body">
                     <h2 class="card-title">Involviete Personen</h2>
                     <div class="overflow-x-auto">
-                        <table class="table table-compact w-full shadow">
+                        <table class="table table-sm">
                             <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Rolle</th>
+                                <tr class="bg-base-100">
+                                    <th class="rounded-tl-lg">Name</th>
+                                    <th class="rounded-tr-lg">Rolle</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for person in case.involved %}
-                                <tr class="hover">
+                                <tr class="hover:bg-base-100">
                                     <th>{{ person.person.name }} {{ person.person.surname }}</th>
                                     <th>
                                         <div class="badge badge-outline">
@@ -75,17 +75,17 @@
                 <div class="card-body">
                     <h2 class="card-title">Dokumente</h2>
                     <div class="overflow-x-auto">
-                        <table class="table table-compact w-full shadow">
+                        <table class="table table-sm">
                             <thead>
-                                <tr>
-                                    <th>Pfad</th>
+                                <tr class="bg-base-100">
+                                    <th class="rounded-tl-lg">Pfad</th>
                                     <th>Name</th>
-                                    <th>Datum</th>
+                                    <th class="rounded-tr-lg">Datum</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for doc in case.documents %}
-                                <tr class="hover">
+                                <tr class="hover:bg-base-100">
                                     <th>{{ doc.path }}</th>
                                     <th>
                                         <div class="dropdown dropdown-hover dropdown-top dropdown-end">
@@ -137,16 +137,16 @@
                                 {{ trial.address }}
 
                                 {% if trial.attendees != [] %}
-                                <table class="table table-compact w-full shadow">
+                                <table class="table table-sm">
                                     <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Rolle</th>
+                                        <tr class="bg-base-200">
+                                            <th class="rounded-tl-lg">Name</th>
+                                            <th class="rounded-tr-lg">Rolle</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for person in trial.attendees %}
-                                        <tr class="hover">
+                                        <tr class="hover:bg-base-200">
                                             <th>{{ person.person.name }} {{ person.person.surname }}</th>
                                             <th>
                                                 <div class="badge badge-outline">

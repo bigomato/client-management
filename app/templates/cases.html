@@ -22,17 +22,17 @@
 <div class="flex flex-col mt-5">
 
     <div class="overflow-x-auto text-center mt-5 ">
-        <table class="table table-compact w-full">
+        <table class="table table-sm">
             <thead>
-                <tr>
-                    <th>Name</th>
+                <tr class="bg-base-200">
+                    <th class="rounded-tl-lg">Name</th>
                     <th>Beschreibung</th>
-                    <th>Status</th>
+                    <th class="rounded-tr-lg">Status</th>
                 </tr>
             </thead>
             <tbody>
                 {%for case in cases%}
-                <tr class="hover" onclick="window.location='{{url_for('cases.case', case_id=case.id)}}';"
+                <tr class="hover:bg-base-200" onclick="window.location='{{url_for('cases.case', case_id=case.id)}}';"
                     style="cursor: pointer;">
                     <td>{{case.name}}</td>
                     <td>{{case.description}}</td>
