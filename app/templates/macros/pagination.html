@@ -1,10 +1,11 @@
 {% macro paginate(pagination_obj, url) %}
-<div class="btn-group my-5 mx-auto">
+<div class="join my-5 mx-auto">
     {% for p in pagination_obj.iter_pages() %}
     {% if p is none %}
-    <a class="btn btn-sm">...</a>
+    <a class="btn join-item btn-sm">...</a>
     {% else %}
-    <a href="{{ url_for(url, page=p) }}" class="btn btn-sm {{ 'btn-primary' if pagination_obj.page == p}}">{{p}}</a>
+    <a href="{{ url_for(url, page=p) }}"
+        class="btn join-item btn-sm {{ 'btn-primary' if pagination_obj.page == p}}">{{p}}</a>
     {% endif %}
     {% endfor %}
 </div>
