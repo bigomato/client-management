@@ -31,7 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                {%for case in cases%}
+                {% for case in cases %}
                 <tr class="hover:bg-base-200" onclick="window.location='{{url_for('cases.case', case_id=case.id)}}';"
                     style="cursor: pointer;">
                     <td>{{case.name}}</td>
@@ -45,8 +45,8 @@
                         <div class="badge badge-error">Verloren</div>
                         {% endif %}
                     </td>
-                    {%endfor%}
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
 
