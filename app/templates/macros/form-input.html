@@ -2,6 +2,7 @@
 <div class="form-control w-full max-w-xs">
     <label class="label"><span class="label-text">{{ field.label }}</span></label>
     {{ field(class="input input-bordered w-full " + "input-error" if field.errors else "input input-bordered w-full",
+    placeholder=field.description,
     **kwargs) }}
     {% if field.errors %}
     <div class="label">

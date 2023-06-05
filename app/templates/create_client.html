@@ -3,7 +3,9 @@
 {{ company_name }} - Mandanten Anlegen
 {% endblock %}
 {% block content %}
+{% from 'macros/form-input.html' import forminput %}
 <form action="" method="POST">
+    {{ form.csrf_token }}
     <div class="grid grid-cols-3">
         <div>
         </div>
@@ -22,31 +24,13 @@
             <h2 class="card-title">Persönliche informationen</h2>
             <div class="flex flex-row gap-4">
                 <div class="flex flex-col">
-                    <div class="form-control w-full max-w-xs">
-                        <label class="label">
-                            <span class="label-text">Vorname</span>
-                        </label>
-                        <input name="name" type="text" placeholder="Name eingeben"
-                            class="input input-bordered w-full max-w-xs" />
-                    </div>
+                    {{forminput(form.name)}}
                 </div>
                 <div class="flex flex-col">
-                    <div class="form-control w-full max-w-xs">
-                        <label class="label">
-                            <span class="label-text">Nachname</span>
-                        </label>
-                        <input name="surname" type="text" placeholder="Nachname eingeben"
-                            class="input input-bordered w-full max-w-xs" />
-                    </div>
+                    {{forminput(form.surname)}}
                 </div>
                 <div class="flex flex-col">
-                    <div class="form-control w-full max-w-xs">
-                        <label class="label">
-                            <span class="label-text">Geburtsdatum</span>
-                        </label>
-                        <input name="birthdate" type="date" placeholder="Geburtsdatum eingeben"
-                            class="input input-bordered w-full max-w-xs" />
-                    </div>
+                    {{forminput(form.birthdate)}}
                 </div>
             </div>
         </div>
@@ -56,20 +40,8 @@
         <div class="card shadow bg-base-200 mt-5">
             <div class="card-body">
                 <div class="card-title">Kontaktdaten</div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label">
-                        <span class="label-text">Telefonnummer</span>
-                    </label>
-                    <input name="phone_number" type="text" placeholder="Telefonnummer eingeben"
-                        class="input input-bordered w-full max-w-xs" />
-                </div>
-                <div class="form-control w-full max-w-xs">
-                    <label class="label">
-                        <span class="label-text">E-Mail</span>
-                    </label>
-                    <input name="email" type="email" placeholder="E-Mail eingeben"
-                        class="input input-bordered w-full max-w-xs" />
-                </div>
+                {{forminput(form.phone_number)}}
+                {{forminput(form.email)}}
             </div>
         </div>
         <div class="card shadow bg-base-200 mt-5">
@@ -77,43 +49,13 @@
                 <div class="card-title">Adresse</div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Stadt</span>
-                            </label>
-                            <input name="city" type="text" placeholder="Stadt eingeben"
-                                class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Land</span>
-                            </label>
-                            <input name="country" type="text" placeholder="Land eingeben"
-                                class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Postleitzahl</span>
-                            </label>
-                            <input name="zip_code" type="text" placeholder="Postleitzahl eingeben"
-                                class="input input-bordered w-full max-w-xs" />
-                        </div>
+                        {{forminput(form.country)}}
+                        {{forminput(form.city)}}
+                        {{forminput(form.zip_code)}}
                     </div>
                     <div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Straße</span>
-                            </label>
-                            <input name="street" type="text" placeholder="Straße eingeben"
-                                class="input input-bordered w-full max-w-xs" />
-                        </div>
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Hausnummer</span>
-                            </label>
-                            <input name="house_number" type="text" placeholder="Hausnummer"
-                                class="input input-bordered w-full max-w-xs" />
-                        </div>
+                        {{forminput(form.street)}}
+                        {{forminput(form.house_number)}}
                     </div>
                 </div>
             </div>
