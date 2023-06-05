@@ -11,7 +11,7 @@
         </div>
         <div>
             <div class="text-4xl font-bold text-accent text-center">
-                Mandanten Anlegen
+                Person Anlegen
             </div>
         </div>
         <div class="text-end">
@@ -22,16 +22,25 @@
     <div class="card w-fit mt-5 mx-auto shadow bg-base-200">
         <div class="card-body">
             <h2 class="card-title">Persönliche informationen</h2>
-            <div class="flex flex-row gap-4">
-                <div class="flex flex-col">
+            <div class="grid grid-cols-2 gap-4 ">
+                <div class="grid-cols-2 flex-col">
                     {{forminput(form.name)}}
                 </div>
-                <div class="flex flex-col">
+                <div class="grid-cols-2 flex-col">
                     {{forminput(form.surname)}}
                 </div>
-                <div class="flex flex-col">
+                <div class="grid-cols-2 ">
                     {{forminput(form.birthdate)}}
                 </div>
+                <div class="form-control">
+                    <label class="label label-text">Was möchtest du Anlegen?</label>
+                    <select class="select select-bordered w-full max-w-xs" name="lawyer_or_client">
+                        <option disabled selected>Was möchtest du Anlegen?</option>
+                        <option {% if type=="lawyer" %} selected {% endif %} value="lawyer">Anwalt</option>
+                        <option {% if type=="client" %} selected {% endif %} value="client">Mandant</option>
+                    </select>
+                </div>
+
             </div>
         </div>
     </div>

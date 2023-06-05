@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="text-end">
-        <a href="" class="btn btn-base-content">Anwalt Anlegen</a>
+        <a href=" {{url_for('clients.create_client',type='lawyer')}}" class="btn btn-base-content">Anwalt Anlegen</a>
     </div>
 </div>
 {{ feedback("Anwalt", "Anwälte", search, lawyers) }}
