@@ -4,7 +4,7 @@ from sqlalchemy import or_
 from app import db
 from app.models.models import *
 from datetime import datetime
-from app.views.client_forms import *
+from app.views.person_forms import *
 
 clients = Blueprint("clients", __name__)
 
@@ -31,67 +31,3 @@ def clients_page():
     if page > clients.pages:
         return redirect(url_for("clients.clients_page", page=clients.pages))
     return render_template("clients.html", clients=clients, search=search)
-
-
-@clients.route("/clients/create", methods=["GET", "POST"])
-def create_client():
-    type = request.args.get("type")
-    form = CreateClientForm()
-    if request.form.get("lawyer_or_client") == "client" and form.validate_on_submit():
-        print("Hi")
-        a = Address(
-            city=form.city.data,
-            street=form.street.data,
-            house_number=form.house_number.data,
-            zip_code=form.zip_code.data,
-            country=form.country.data,
-        )
-
-        p = Person(
-            name=form.name.data,
-            surname=form.surname.data,
-            birthdate=form.birthdate.data,
-            our_client=True,
-            address=a,
-        )
-
-        ci = ContactInfo(
-            phone_number=form.phone_number.data,
-            email=form.email.data,
-            person=p,
-        )
-
-        print("a, p, ci", a, p, ci)
-        db.session.add_all([a, p, ci])
-        db.session.commit()
-        print("a, p, ci", a, p, ci)
-
-    elif request.form.get("lawyer_or_client") == "lawyer" and form.validate_on_submit():
-        a = Address(
-            city=form.city.data,
-            street=form.street.data,
-            house_number=form.house_number.data,
-            zip_code=form.zip_code.data,
-            country=form.country.data,
-        )
-
-        p = Person(
-            name=form.name.data,
-            surname=form.surname.data,
-            birthdate=form.birthdate.data,
-            our_lawyer=True,
-            address=a,
-        )
-
-        ci = ContactInfo(
-            phone_number=form.phone_number.data,
-            email=form.email.data,
-            person=p,
-        )
-
-        print("a, p, ci", a, p, ci)
-        db.session.add_all([a, p, ci])
-        db.session.commit()
-        print("a, p, ci", a, p, ci)
-
-    return render_template("create_client.html", form=form, type=type)

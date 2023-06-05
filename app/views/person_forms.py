@@ -3,7 +3,7 @@ from wtforms import StringField, DateField, EmailField
 from wtforms.validators import DataRequired, Email, Length
 
 
-class CreateClientForm(FlaskForm):
+class CreatePersonForm(FlaskForm):
     name = StringField(
         "Vorname",
         validators=[DataRequired(), Length(min=1, max=50)],
