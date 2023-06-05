@@ -21,3 +21,18 @@ class EditCaseFrom(FlaskForm):
         choices=[(status.name, status.display()) for status in CaseStatus],
         description="Status",
     )
+
+
+class AddInvolvedPerson(FlaskForm):
+    person = SelectField(
+        "Person",
+        validators=[DataRequired()],
+        choices=[],
+        description="Person",
+    )
+    role = SelectField(
+        "Rolle",
+        validators=[DataRequired()],
+        choices=[],
+        description="Rolle",
+    )

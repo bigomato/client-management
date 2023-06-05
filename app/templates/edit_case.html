@@ -2,9 +2,8 @@
 {% block title %}
 {{ company_name }} - Fall Bearbeiten
 {% endblock %}
+
 {% block content %}
-{% set page = "detail" %}
-{% set page_url = "cases.edit_case_details" %}
 <!-- TODO: Add action choice -->
 <form action="" method="POST">
     <div class="grid grid-cols-3">
@@ -22,8 +21,10 @@
     <div class="tabs tabs-boxed w-fit mx-auto mt-4">
         <a class="tab {% if page == 'detail' %}
             tab-active
-        {% endif %}">Allgemeine Informationen</a>
-        <a class="tab">Involvierte Personen</a>
+        {% endif %}" href="{{url_for('cases.edit_case_details', case_id=case.id)}}">Allgemeine Informationen</a>
+        <a class="tab {% if page == 'involved' %}
+        tab-active
+    {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
         <a class="tab">Dokumente</a>
         <a class="tab">Verhandlungen</a>
         <!-- TODO: Implement selector -->
