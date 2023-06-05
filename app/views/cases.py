@@ -3,6 +3,7 @@ from flask import render_template
 from sqlalchemy import or_
 from app import db
 from app.models.models import *
+from app.views.case_forms import EditCaseFrom
 
 cases = Blueprint("cases", __name__)
 
@@ -34,3 +35,21 @@ def cases_page():
 def case(case_id):
     case = db.session.query(Case).get_or_404(case_id)
     return render_template("case.html", case=case, CaseStatus=CaseStatus)
+
+
+@cases.route("/cases/<int:case_id>/edit", methods=["GET", "POST"])
+def edit_case_details(case_id):
+    form = EditCaseFrom()
+    case = db.session.query(Case).get_or_404(case_id)
+    if form.validate_on_submit():
+        case.name = form.name.data
+        case.description = form.description.data
+        case.case_status = form.case_status.data
+        db.session.commit()
+        flash("Der Fall wurde erfolgreich bearbeitet.", "success")
+    form.name.data = case.name
+    form.description.data = case.description
+    form.case_status.data = case.case_status
+    return render_template(
+        "edit_case_datail.html", case=case, CaseStatus=CaseStatus, form=form
+    )
