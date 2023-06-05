@@ -13,3 +13,19 @@
     {% endif %}
 </div>
 {% endmacro %}
+
+{% macro fullforminput(field) %}
+<div class="form-control w-full">
+    <label class="label"><span class="label-text">{{ field.label }}</span></label>
+    {{ field(class="input input-bordered w-full " + "input-error" if field.errors else "input input-bordered w-full",
+    placeholder=field.description,
+    **kwargs) }}
+    {% if field.errors %}
+    <div class="label">
+        {% for error in field.errors %}
+        <div class="text-xs text-error">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,28 @@
+{% extends 'edit_case.html' %}
+{% block title %}
+{{ company_name }} - Fall Bearbeiten
+{% endblock %}
+{% set page = "detail" %}
+{% set page_url = "cases.edit_case_details" %}
+
+{% block form_content %}
+{% from 'macros/form-input.html' import fullforminput %}
+{{ form.csrf_token }}
+
+{{ fullforminput(form.name) }}
+
+{{ fullforminput(form.description) }}
+<div class="form-control">
+    <label class="label">
+        <span class="label-text">{{ form.case_status.label }}</span>
+    </label>
+    <select class="select w-full max-w-xs select-bordered" name="case_status">
+        <option disabled>Wähle einen Status</option>
+        {% for status in form.case_status.choices %}
+        <option value="{{ status[0] }}" {% if case.case_status.name==status[0] %} selected {% endif %}>{{ status[1] }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endblock %}
