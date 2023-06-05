@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Fall Bearbeiten
+{% endblock %}
+
+{% block content %}
+<!-- TODO: Add action choice -->
+<form action="" method="POST">
+    <div class="grid grid-cols-3">
+        <div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-accent text-center">
+                Fall Bearbeiten
+            </div>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-success">Speichern</button>
+        </div>
+    </div>
+    <div class="tabs tabs-boxed w-fit mx-auto mt-4">
+        <a class="tab {% if page == 'detail' %}
+            tab-active
+        {% endif %}" href="{{url_for('cases.edit_case_details', case_id=case.id)}}">Allgemeine Informationen</a>
+        <a class="tab {% if page == 'involved' %}
+        tab-active
+    {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
+        <a class="tab">Dokumente</a>
+        <a class="tab">Verhandlungen</a>
+        <!-- TODO: Implement selector -->
+    </div>
+    {% block form_content %}
+    <div class="text-4xl font-bold mt-20 text-center">
+        Nothing to see here
+    </div>
+    {% endblock %}
+</form>
+{% endblock %}

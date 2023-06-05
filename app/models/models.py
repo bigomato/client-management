@@ -53,6 +53,17 @@ class CaseStatus(enum.IntEnum):
     def __str__(self) -> str:
         return self.name
 
+    def display(self) -> str:
+        match self:
+            case CaseStatus.won:
+                return "Gewonnen"
+            case CaseStatus.lost:
+                return "Verloren"
+            case CaseStatus.ongoing:
+                return "Laufend"
+            case _:
+                return "Unbekannt"
+
 
 CaseStatusType: Enum = Enum(
     CaseStatus,
