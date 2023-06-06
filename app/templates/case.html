@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="text-end">
-        <a href="" class="btn btn-base-content">
+        <a href="{{ url_for('cases.edit_case_details', case_id=case.id) }}" class="btn btn-base-content">
             Bearbeiten
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                 stroke="currentColor" class="w-5 h-5 ml-2">
