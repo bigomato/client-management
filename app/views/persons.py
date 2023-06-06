@@ -14,7 +14,7 @@ persons = Blueprint("persons", __name__)
 def create_person():
     type = request.args.get("type")
     form = CreatePersonForm()
-    if request.form.get("lawyer_or_client") == "client" and form.validate_on_submit():
+    if form.validate_on_submit():
         print("Hi")
         a = Address(
             city=form.city.data,
@@ -28,35 +28,8 @@ def create_person():
             name=form.name.data,
             surname=form.surname.data,
             birthdate=form.birthdate.data,
-            our_client=True,
-            address=a,
-        )
-
-        ci = ContactInfo(
-            phone_number=form.phone_number.data,
-            email=form.email.data,
-            person=p,
-        )
-
-        print("a, p, ci", a, p, ci)
-        db.session.add_all([a, p, ci])
-        db.session.commit()
-        print("a, p, ci", a, p, ci)
-
-    elif request.form.get("lawyer_or_client") == "lawyer" and form.validate_on_submit():
-        a = Address(
-            city=form.city.data,
-            street=form.street.data,
-            house_number=form.house_number.data,
-            zip_code=form.zip_code.data,
-            country=form.country.data,
-        )
-
-        p = Person(
-            name=form.name.data,
-            surname=form.surname.data,
-            birthdate=form.birthdate.data,
-            our_lawyer=True,
+            our_client=True if request.form.get("lawyer_or_client")=="client" else False,
+            our_lawyer=True if request.form.get("lawyer_or_client")=="lawyer" else False,
             address=a,
         )
 
