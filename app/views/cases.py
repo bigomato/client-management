@@ -167,3 +167,14 @@ def remove_involved_person(case_id, involved_id):
     db.session.commit()
     flash("Die Person wurde erfolgreich entfernt.", "success")
     return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+
+
+@cases.route("/cases/<int:case_id>/edit/documents", methods=["GET", "POST"])
+def edit_case_documents(case_id):
+    case = db.session.query(Case).get_or_404(case_id)
+    documets = case.documents
+    return render_template(
+        "edit_case_documents.html",
+        case=case,
+        documents=documets,
+    )

@@ -25,7 +25,7 @@
         <a class="tab {% if page == 'involved' %}
         tab-active
     {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
-        <a class="tab">Dokumente</a>
+        <a class="tab" href="{{url_for('cases.edit_case_documents', case_id=case.id)}}">Dokumente</a>
         <a class="tab">Verhandlungen</a>
         <!-- TODO: Implement selector -->
     </div>
