@@ -38,7 +38,9 @@
 
             <tbody>
                 {% for lawyer in lawyers %}
-                <tr class="hover:bg-base-200">
+                <tr class="hover:bg-base-200"
+                    onclick="window.location='{{url_for('persons.person', person_id=lawyer.id)}}';"
+                    style="cursor: pointer;">
                     <td>{{ lawyer.name }}</td>
                     <td>{{ lawyer.surname }}</td>
                     <td>{{ lawyer.birthdate }}</td>

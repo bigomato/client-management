@@ -81,3 +81,9 @@ def create_person():
             return redirect(url_for("cases.edit_case_involved", case_id=case_id))
 
     return render_template("create_person.html", form=form, type=type)
+
+
+@persons.route("/persons/<int:person_id>")
+def person(person_id):
+    person = db.session.query(Person).get_or_404(person_id)
+    return render_template("person.html", person=person, CaseStatus=CaseStatus)
