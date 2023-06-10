@@ -67,9 +67,27 @@ def edit_case_involved(case_id):
     form.role.choices = [(role.name, role.display()) for role in InvolvementRole]
     case = db.session.query(Case).get_or_404(case_id)
 
+    possible_clients = {}  # {lawyer_id: [involved, ...]}
+    for i in case.involved:
+        if i.role.is_lawyer():
+            possible_clients[i.id] = []
+            for j in case.involved:
+                if j.role.is_client():
+                    allready_client = False
+                    for k in i.clients:
+                        if j.id == k.id:
+                            allready_client = True
+                    if not allready_client:
+                        possible_clients[i.id].append(j)
+
     if form.validate_on_submit():
         pass
-    return render_template("edit_case_involved.html", case=case, form=form)
+    return render_template(
+        "edit_case_involved.html",
+        case=case,
+        form=form,
+        possible_clients=possible_clients,
+    )
 
 
 @cases.route("/cases/<int:case_id>/edit/involved/add", methods=["POST"])
@@ -93,6 +111,50 @@ def add_involved_person(case_id):
         db.session.commit()
         flash("Die Person wurde erfolgreich hinzugefügt.", "success")
 
+    return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+
+
+@cases.route(
+    "/cases/<int:case_id>/edit/involved/<int:lawyer_id>/clients/<int:client_id>/remove",
+    methods=["GET", "POST"],
+)
+def remove_client_from_lawyer(case_id, lawyer_id, client_id):
+    inv = db.session.query(Involved).get_or_404(lawyer_id)
+    client = db.session.query(Involved).get_or_404(client_id)
+    # check if they belong to case_id
+    if inv.case_id != case_id or client.case_id != case_id:
+        flash("Die Personen gehören nicht zu diesem Fall.", "warning")
+        return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+    # check if client is in list of clients of lawyer
+    if client not in inv.clients:
+        flash("Der Klient ist nicht in der Liste des Anwalts.", "warning")
+        return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+    inv.clients.remove(client)
+    db.session.commit()
+    flash("Der Klient wurde erfolgreich entfernt.", "success")
+    return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+
+
+@cases.route(
+    "/cases/<int:case_id>/edit/involved/<int:lawyer_id>/clients/<int:client_id>/add",
+    methods=["GET", "POST"],
+)
+def add_client_to_lawyer(case_id, lawyer_id, client_id):
+    inv = db.session.query(Involved).get_or_404(lawyer_id)
+    client = db.session.query(Involved).get_or_404(client_id)
+    # check if they belong to case_id
+    if inv.case_id != case_id or client.case_id != case_id:
+        print("case_id", case_id)
+        flash("Die Personen gehören nicht zu diesem Fall.", "warning")
+        return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+    # check if client is in list of clients of lawyer
+    if client in inv.clients:
+        print("client in inv.clients")
+        flash("Der Klient ist bereits in der Liste des Anwalts.", "warning")
+        return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+    inv.clients.append(client)
+    db.session.commit()
+    flash("Der Klient wurde erfolgreich hinzugefügt.", "success")
     return redirect(url_for("cases.edit_case_involved", case_id=case_id))
 
 

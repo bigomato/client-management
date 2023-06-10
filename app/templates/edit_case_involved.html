@@ -46,12 +46,13 @@
         <div class="card bg-base-200 shadow h-fit">
             <div class="card-body">
                 <h2 class="card-title">Involviete Personen</h2>
-                <div class="overflow-x-auto">
-                    <table class="table table-sm">
+                <div class="overflow-visible">
+                    <table class="table table-sm ">
                         <thead>
                             <tr class="bg-base-100">
                                 <th class="rounded-tl-lg">Name</th>
-                                <th class="rounded-tr-lg">Rolle</th>
+                                <th>Rolle</th>
+                                <th>Mandanten</th>
                                 <th class="rounded-tr-lg"></th>
                             </tr>
                         </thead>
@@ -63,6 +64,40 @@
                                     <div class="badge badge-outline">
                                         {{ person.role.display() }}
                                     </div>
+                                </th>
+                                <th>
+                                    {% if person.role.is_lawyer() %}
+
+                                    {% for client in person.clients %}
+                                    <div class="badge badge-outline group">
+                                        {{ client.person.name }} {{ client.person.surname }}
+                                        <a href="{{ url_for('cases.edit_case_involved', case_id=case.id) }}/{{ person.id }}/clients/{{ client.id }}/remove"
+                                            class="group-hover:w-4 w-0 transition-width duration-300 ease-in-out overflow-hidden">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    {% endfor %}
+
+                                    {% if possible_clients[person.id] != [] %}
+                                    <div class="dropdown dropdown-hover">
+                                        <label tabindex="0" class="btn btn-sm rounded-full btn-outline">+</label>
+                                        <ul tabindex="0"
+                                            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                            {% for pc in possible_clients[person.id] %}
+                                            <li><a
+                                                    href="{{ url_for('cases.edit_case_involved', case_id=case.id) }}/{{ person.id }}/clients/{{ pc.id }}/add">{{pc.person.name
+                                                    }} {{pc.person.surname}}</a></li>
+                                            {% endfor %}
+
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+
+                                    {% endif %}
                                 </th>
                                 <th class="text-end">
                                     <button class="btn btn-error btn-sm"
