@@ -35,6 +35,15 @@ class InvolvementRole(enum.IntEnum):
             case _:
                 return "Unbekannt"
 
+    def is_lawyer(self) -> bool:
+        return (
+            self == InvolvementRole.victim_lawyer
+            or self == InvolvementRole.suspect_lawyer
+        )
+
+    def is_client(self) -> bool:
+        return self == InvolvementRole.victim or self == InvolvementRole.suspect
+
 
 InvolvementRoleType: Enum = Enum(
     InvolvementRole,
