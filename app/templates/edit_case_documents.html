@@ -9,11 +9,18 @@
 {% from 'macros/form-input.html' import fullforminput %}
 {% from 'macros/file_structure.html' import pdf_file %}
 
-
+{{ form.csrf_token }}
 
 <div class="grid grid-cols-6 gap-4 mt-4">
-    <div class="col-span-2 text-center">
-        Upload Dokumente
+    <div class="col-span-2 text-center text-end">
+        <div class="form-control w-full">
+            <label class="label">
+                <span class="label-text">Fähle eine Datei hoch.</span>
+            </label>
+            <input type="file" class="file-input file-input-bordered w-full" name="file" placeholder="Datei auswählen">
+        </div>
+        {{ fullforminput(form.description) }}
+        <button class="btn btn-success mt-4">Speichern</button>
     </div>
 
     <div class="col-span-4">
@@ -31,16 +38,11 @@
                                 Dokumente zu dem Fall
                             </summary>
                             <ul>
-                                {{ pdf_file("testfile.pdf", "22.3.2022", "this is a brand new file with some amazing
-                                features!")}}
-                                {{ pdf_file("testfile.pdf", "22.3.2022", "this is a brand new file with some amazing
-                                features!")}}
-                                {{ pdf_file("testfile.pdf", "22.3.2022", "this is a brand new file with some amazing
-                                features!")}}
-                                {{ pdf_file("testfile.pdf", "22.3.2022", "this is a brand new file with some amazing
-                                features!")}}
-                                {{ pdf_file("testfile.pdf", "22.3.2022", "this is a brand new file with some amazing
-                                features!")}}
+                                {% for doc in documents %}
+
+                                {{ pdf_file(doc.name, doc.date, doc.description, url_for('cases.download_document',
+                                case_id=case.id, document_id=doc.id))}}
+                                {% endfor %}
                             </ul>
                         </details>
                     </li>
