@@ -5,7 +5,7 @@
 
 {% block content %}
 <!-- TODO: Add action choice -->
-<form action="" method="POST">
+<form action="" method="POST" enctype="multipart/form-data">
     <div class="grid grid-cols-3">
         <div>
         </div>
@@ -25,7 +25,9 @@
         <a class="tab {% if page == 'involved' %}
         tab-active
     {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
-        <a class="tab" href="{{url_for('cases.edit_case_documents', case_id=case.id)}}">Dokumente</a>
+        <a class="tab {% if page == 'documents' %}
+        tab-active
+    {% endif %}" href="{{url_for('cases.edit_case_documents', case_id=case.id)}}">Dokumente</a>
         <a class="tab">Verhandlungen</a>
         <!-- TODO: Implement selector -->
     </div>

@@ -1,5 +1,9 @@
-from flask import Blueprint, flash, redirect, request, url_for
-from flask import render_template
+import datetime
+import io
+import os
+from flask import Blueprint, flash, redirect, request, url_for, send_file
+from flask import render_template, current_app
+from werkzeug.utils import secure_filename
 from sqlalchemy import or_
 from app import db
 from app.models.models import *
@@ -171,10 +175,46 @@ def remove_involved_person(case_id, involved_id):
 
 @cases.route("/cases/<int:case_id>/edit/documents", methods=["GET", "POST"])
 def edit_case_documents(case_id):
+    form = UploadDocumentForm()
     case = db.session.query(Case).get_or_404(case_id)
     documets = case.documents
+    print("documets", documets)
+    if form.validate_on_submit():
+        f = form.file.data
+        filename = secure_filename(f.filename)
+        path = os.path.join(
+            current_app.instance_path, str(case_id), "documents", filename
+        )
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        f.save(path)
+        print("path", path)
+        doc = Document(
+            name=filename,
+            path=path,
+            case_id=case_id,
+            date=datetime.datetime.now(),
+            description=form.description.data,
+        )
+        db.session.add(doc)
+        db.session.commit()
+        flash("Das Dokument wurde erfolgreich hochgeladen.", "success")
+        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
     return render_template(
         "edit_case_documents.html",
         case=case,
         documents=documets,
+        form=form,
+    )
+
+
+@cases.route("/cases/<int:case_id>/edit/documents/download/<int:document_id>")
+def download_document(case_id, document_id):
+    doc = db.session.query(Document).get_or_404(document_id)
+    path = doc.path
+    if not os.path.exists(path):
+        flash("Das Dokument existiert nicht mehr.", "warning")
+        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
+    return send_file(
+        path,
+        as_attachment=True,
     )
