@@ -211,6 +211,9 @@ def edit_case_documents(case_id):
 def download_document(case_id, document_id):
     doc = db.session.query(Document).get_or_404(document_id)
     path = doc.path
+    if not os.path.exists(path):
+        flash("Das Dokument existiert nicht mehr.", "warning")
+        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
     return send_file(
         path,
         as_attachment=True,
