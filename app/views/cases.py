@@ -207,6 +207,22 @@ def edit_case_documents(case_id):
     )
 
 
+@cases.route(
+    "/cases/<int:case_id>/edit/trials/",
+    methods=["GET", "POST"],
+)
+def edit_case_trials(case_id):
+    form = CreateTrialForm()
+    case = db.session.query(Case).get_or_404(case_id)
+    if form.validate_on_submit():
+        pass
+    return render_template(
+        "edit_case_trials.html",
+        case=case,
+        form=form,
+    )
+
+
 @cases.route("/cases/<int:case_id>/edit/documents/download/<int:document_id>")
 def download_document(case_id, document_id):
     doc = db.session.query(Document).get_or_404(document_id)

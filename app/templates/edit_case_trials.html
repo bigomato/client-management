@@ -1,0 +1,16 @@
+{% extends 'edit_case.html' %}
+{% block title %}
+{{ company_name }} - Fall Bearbeiten
+{% endblock %}
+{% set page = "trials" %}
+{% set page_url = "cases.edit_case_trials" %}
+
+{% block form_content %}
+{% from 'macros/form-input.html' import fullforminput %}
+{% from 'macros/file_structure.html' import pdf_file %}
+
+{{ form.csrf_token }}
+
+<h3 class="text-4xl text-primary font-bold">Trials</h3>
+
+{% endblock %}

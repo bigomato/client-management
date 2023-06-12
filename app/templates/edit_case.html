@@ -22,14 +22,18 @@
         <a class="tab {% if page == 'detail' %}
             tab-active
         {% endif %}" href="{{url_for('cases.edit_case_details', case_id=case.id)}}">Allgemeine Informationen</a>
+
         <a class="tab {% if page == 'involved' %}
         tab-active
-    {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
+        {% endif %}" href="{{url_for('cases.edit_case_involved', case_id=case.id)}}">Involvierte Personen</a>
+
         <a class="tab {% if page == 'documents' %}
         tab-active
-    {% endif %}" href="{{url_for('cases.edit_case_documents', case_id=case.id)}}">Dokumente</a>
-        <a class="tab">Verhandlungen</a>
-        <!-- TODO: Implement selector -->
+        {% endif %}" href="{{url_for('cases.edit_case_documents', case_id=case.id)}}">Dokumente</a>
+
+        <a class="tab {% if page == 'trials' %}
+        tab-active
+        {% endif %}" href="{{url_for('cases.edit_case_trials', case_id=case.id)}}">Verhandlungen</a>
     </div>
     {% block form_content %}
     <div class="text-4xl font-bold mt-20 text-center">

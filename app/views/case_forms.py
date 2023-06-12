@@ -50,3 +50,7 @@ class UploadDocumentForm(FlaskForm):
         validators=[DataRequired(), Length(min=1, max=50)],
         description="Beschreibung",
     )
+
+
+class CreateTrialForm(FlaskForm):
+    pass
