@@ -1,0 +1,72 @@
+{% extends 'edit_case.html' %}
+{% block title %}
+{{ company_name }} - Fall Bearbeiten
+{% endblock %}
+{% set page = "trials" %}
+{% set page_url = "cases.edit_case_trials" %}
+
+{% block form_content %}
+{% from 'macros/form-input.html' import fullforminput, forminput, checkboxinput %}
+
+{{ form.csrf_token }}
+<div class="card bg-base-200 shadow h-fit mt-4">
+    <div class="card-body">
+        <h2 class="card-title">Involviete Personen
+            <a href="{{ url_for('cases.edit_case_trials', case_id=case.id) }}" class="btn btn-primary btn-sm">Zurück</a>
+
+        </h2>
+        <div class="overflow-visible">
+            <table class="table">
+                <thead>
+                    <tr class="bg-base-100">
+                        <th class="rounded-tl-lg">Name</th>
+                        <th>Rolle</th>
+                        <th>Mandanten</th>
+                        <th class="rounded-tr-lg">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in case.involved %}
+                    <tr class="hover:bg-base-100">
+                        <th>{{ person.person.name }} {{ person.person.surname }}</th>
+                        <th>
+                            <div class="badge badge-outline">
+                                {{ person.role.display() }}
+                            </div>
+                        </th>
+                        <th>
+                            {% if person.role.is_lawyer() %}
+
+                            {% for client in person.clients %}
+                            <div class="badge badge-outline group">
+                                {{ client.person.name }} {{ client.person.surname }}
+                            </div>
+                            {% endfor %}
+
+
+                            {% endif %}
+                        </th>
+                        <th class="text-end">
+                            <!-- show either an add button or a remove button -->
+
+                            {% if person in trial.attendees %}
+                            <button class="btn btn-error btn-sm" formmethod="POST"
+                                formaction="{{ url_for('cases.remove_attendee_from_trial', case_id=case.id, trial_id=trial.id,involved_id=person.id) }}">
+                                -
+                            </button>
+                            {% else %}
+                            <button class="btn btn-success btn-sm" formmethod="POST"
+                                formaction="{{ url_for('cases.add_attendee_to_trial', case_id=case.id, trial_id=trial.id, involved_id=person.id) }}">
+                                +
+                            </button>
+                            {% endif %}
+                        </th>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

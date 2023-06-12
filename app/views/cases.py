@@ -207,6 +207,19 @@ def edit_case_documents(case_id):
     )
 
 
+@cases.route("/cases/<int:case_id>/edit/documents/download/<int:document_id>")
+def download_document(case_id, document_id):
+    doc = db.session.query(Document).get_or_404(document_id)
+    path = doc.path
+    if not os.path.exists(path):
+        flash("Das Dokument existiert nicht mehr.", "warning")
+        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
+    return send_file(
+        path,
+        as_attachment=True,
+    )
+
+
 @cases.route(
     "/cases/<int:case_id>/edit/trials/",
     methods=["GET", "POST"],
@@ -239,8 +252,12 @@ def edit_case_trials(case_id):
             if form.use_address.data
             else "Keine neue Adresse angelegt!"
         )
-        flash("Der Termin wurde erfolgreich erstellt.", "success")
-        return redirect(url_for("cases.edit_case_trials", case_id=case_id))
+        flash("Die Verhandlung wurde erfolgreich angelegt.", "success")
+        return redirect(
+            url_for(
+                "cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial.id
+            )
+        )
 
     return render_template(
         "edit_case_trials.html",
@@ -249,14 +266,78 @@ def edit_case_trials(case_id):
     )
 
 
-@cases.route("/cases/<int:case_id>/edit/documents/download/<int:document_id>")
-def download_document(case_id, document_id):
-    doc = db.session.query(Document).get_or_404(document_id)
-    path = doc.path
-    if not os.path.exists(path):
-        flash("Das Dokument existiert nicht mehr.", "warning")
-        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
-    return send_file(
-        path,
-        as_attachment=True,
+@cases.route(
+    "/cases/<int:case_id>/edit/trials/<int:trial_id>/attendees",
+    methods=["GET", "POST"],
+)
+def edit_case_trial_attendees(case_id, trial_id):
+    form = AddAttendeeForm()
+    trial = db.session.query(Trial).get_or_404(trial_id)
+    attendees = trial.attendees
+    return render_template(
+        "edit_case_trial_attendees.html",
+        trial=trial,
+        attendees=attendees,
+        form=form,
+        case=trial.case,
+    )
+
+
+@cases.route(
+    "/cases/<int:case_id>/edit/trials/<int:trial_id>/attendees/<int:involved_id>/add",
+    methods=["POST"],
+)
+def add_attendee_to_trial(case_id, trial_id, involved_id):
+    print("case_id")
+    trial = db.session.query(Trial).get(trial_id)
+    inv = db.session.query(Involved).get(involved_id)
+    print("inv", inv)
+    if inv.case_id != case_id:
+        flash("Die Person gehört nicht zu diesem Fall.", "warning")
+        return redirect(
+            url_for(
+                "cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id
+            )
+        )
+    if inv in trial.attendees:
+        flash("Die Person ist bereits in der Liste der Teilnehmer.", "warning")
+        return redirect(
+            url_for(
+                "cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id
+            )
+        )
+    trial.attendees.append(inv)
+    db.session.commit()
+    flash("Die Person wurde erfolgreich hinzugefügt.", "success")
+    return redirect(
+        url_for("cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id)
+    )
+
+
+@cases.route(
+    "/cases/<int:case_id>/edit/trials/<int:trial_id>/attendees/<int:involved_id>/remove",
+    methods=["POST"],
+)
+def remove_attendee_from_trial(case_id, trial_id, involved_id):
+    trial = db.session.query(Trial).get_or_404(trial_id)
+    inv = db.session.query(Involved).get_or_404(involved_id)
+    if inv.case_id != case_id:
+        flash("Die Person gehört nicht zu diesem Fall.", "warning")
+        return redirect(
+            url_for(
+                "cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id
+            )
+        )
+    if inv not in trial.attendees:
+        flash("Die Person ist nicht in der Liste der Teilnehmer.", "warning")
+        return redirect(
+            url_for(
+                "cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id
+            )
+        )
+    trial.attendees.remove(inv)
+    db.session.commit()
+    flash("Die Person wurde erfolgreich entfernt.", "success")
+    return redirect(
+        url_for("cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id)
     )

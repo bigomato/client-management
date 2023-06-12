@@ -49,7 +49,7 @@
         </div>
 
         <!-- Submit button -->
-        <button type="submit" class="btn btn-success mt-4 col-span-2" formmethod="POST">Prozess hinzufügen</button>
+        <button type="submit" class="btn btn-success mt-4 col-span-2" formmethod="POST">Verhandlung hinzufügen</button>
     </div>
 </div>
 
@@ -61,8 +61,14 @@
             <div class="text-right">
                 <!-- edit and delete button -->
                 <div class="join">
-                    <a href="" class="btn btn-error btn-sm join-item">Löschen</a>
-                    <a href="" class="btn btn-primary btn-sm join-item">Bearbeiten</a>
+                    <button formaction="{{ url_for('trials.delete_trial', trial_id=trial.id) }}" formmethod="POST"
+                        class="btn btn-error btn-sm join-item" formnovalidate>Löschen</button>
+                    <button formaction="{{ url_for('trials.edit_trial', trial_id=trial.id) }}" formmethod="GET"
+                        class="btn btn-sm join-item" formnovalidate>Bearbeiten</button>
+                    <button
+                        formaction="{{ url_for('cases.edit_case_trial_attendees', trial_id=trial.id, case_id=trial.case.id) }}"
+                        formmethod="GET" class="btn btn-sm join-item" formnovalidate>Involvierte Personen
+                        bearbeiten</button>
                 </div>
             </div>
         </h3>

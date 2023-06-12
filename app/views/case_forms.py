@@ -79,3 +79,7 @@ class CreateTrialForm(FlaskForm):
     zip_code = StringField("Postleitzahl", description="Postleitzahl")
     street = StringField("Straße", description="Straße")
     house_number = StringField("Hausnummer", description="Hasunummer")
+
+
+class AddAttendeeForm(FlaskForm):
+    pass

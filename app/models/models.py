@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Date, Integer, String, Table, Enum, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 import enum
 from app import db
 
@@ -282,7 +282,9 @@ class Trial(db.Model):
     address_id = Column(Integer, ForeignKey("address.id"), nullable=True)
 
     attendees = relationship("Involved", secondary=attends, back_populates="attendees")
-    judgement = relationship("Judgement", uselist=False, backref="trial")
+    judgement = relationship(
+        "Judgement", uselist=False, backref=backref("trial", cascade="all, delete")
+    )
 
     def __repr__(self):
         return "<Trial(name='{}', description='{}')>".format(
