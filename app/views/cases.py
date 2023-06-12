@@ -215,7 +215,33 @@ def edit_case_trials(case_id):
     form = CreateTrialForm()
     case = db.session.query(Case).get_or_404(case_id)
     if form.validate_on_submit():
-        pass
+        trial = Trial(
+            date=form.date.data,
+            description=form.description.data,
+            case_id=case_id,
+            name=form.name.data,
+        )
+        db.session.add(trial)
+        if form.use_address.data == True:
+            a = Address(
+                city=form.city.data,
+                street=form.street.data,
+                house_number=form.house_number.data,
+                zip_code=form.zip_code.data,
+                country=form.country.data,
+            )
+            db.session.add(a)
+            trial.address = a
+        db.session.commit()
+        print("trial", trial)
+        print(
+            "Es wurde eine Adresse angelegt."
+            if form.use_address.data
+            else "Keine neue Adresse angelegt!"
+        )
+        flash("Der Termin wurde erfolgreich erstellt.", "success")
+        return redirect(url_for("cases.edit_case_trials", case_id=case_id))
+
     return render_template(
         "edit_case_trials.html",
         case=case,

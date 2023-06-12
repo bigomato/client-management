@@ -6,11 +6,113 @@
 {% set page_url = "cases.edit_case_trials" %}
 
 {% block form_content %}
-{% from 'macros/form-input.html' import fullforminput %}
-{% from 'macros/file_structure.html' import pdf_file %}
+{% from 'macros/form-input.html' import fullforminput, forminput, checkboxinput %}
 
 {{ form.csrf_token }}
+<div class="card bg-base-200 mt-4">
+    <div class="card-body grid grid-cols-2 gap-4">
+        <div>
+            <h3 class="card-title text-lg">Neue Verhandlung</h3>
+            <!-- New trial form -->
+            {{ form.csrf_token }}
 
-<h3 class="text-4xl text-primary font-bold">Trials</h3>
+            <!-- Trial name -->
+            {{ fullforminput(form.name) }}
+
+            <!-- Trial date -->
+            {{ fullforminput(form.date) }}
+
+            <!-- Trial description -->
+            {{ fullforminput(form.description) }}
+
+            <!-- Trial address -->
+            <!-- TODO: Selectable Address -->
+        </div>
+
+        <div class="card shadow bg-base-100 mt-5">
+            <div class="card-body">
+                <div class="card-title">Adresse
+                    {{checkboxinput(form.use_address)}}
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        {{forminput(form.country)}}
+                        {{forminput(form.city)}}
+                        {{forminput(form.zip_code)}}
+                    </div>
+                    <div>
+                        {{forminput(form.street)}}
+                        {{forminput(form.house_number)}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-success mt-4 col-span-2" formmethod="POST">Prozess hinzufügen</button>
+    </div>
+</div>
+
+{% for trial in case.trials %}
+<div class="card bg-base-200 mt-4">
+    <div class="card-body p-4">
+        <h3 class="card-title text-lg grid grid-cols-2">
+            <span>{{trial.name}} <div class="badge badge-outline">{{trial.date}}</div></span>
+            <div class="text-right">
+                <!-- edit and delete button -->
+                <div class="join">
+                    <a href="" class="btn btn-error btn-sm join-item">Löschen</a>
+                    <a href="" class="btn btn-primary btn-sm join-item">Bearbeiten</a>
+                </div>
+            </div>
+        </h3>
+        <div class="overflow-x-auto">
+            {% if trial.judgement is not none %}
+            <div class="card bg-info-content my-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-lg">
+                        <span>{{trial.judgement.judgement.display()}}</span>
+                    </h3>
+                    {{ trial.judgement.description }}
+                    {% if trial.judgement.document is not none %}
+                    <br> {{trial.judgement.document.name}} ({{trial.judgement.document.path}})
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {{ trial.description }} <br>
+            {{ trial.address }}
+
+            {% if trial.attendees != [] %}
+            <table class="table table-sm">
+                <thead>
+                    <tr class="bg-base-200">
+                        <th class="rounded-tl-lg">Name</th>
+                        <th class="rounded-tr-lg">Rolle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for person in trial.attendees %}
+                    <tr class="hover:bg-base-200">
+                        <th>{{ person.person.name }} {{ person.person.surname }}</th>
+                        <th>
+                            <div class="badge badge-outline">
+                                {{ person.role.display() }}
+                            </div>
+                        </th>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+
+        </div>
+    </div>
+</div>
+
+<div class="mb-4"></div>
+
+{% endfor %}
 
 {% endblock %}
