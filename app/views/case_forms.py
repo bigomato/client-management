@@ -1,6 +1,6 @@
 from app.models.models import CaseStatus
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField
+from wtforms import StringField, SelectField, BooleanField, DateField
 from wtforms.validators import DataRequired, Email, Length
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 
@@ -53,4 +53,33 @@ class UploadDocumentForm(FlaskForm):
 
 
 class CreateTrialForm(FlaskForm):
+    # name, date, description
+    name = StringField(
+        "Name",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Name",
+    )
+    date = DateField(
+        "Datum",
+        validators=[DataRequired()],
+        description="Datum",
+    )
+    description = StringField(
+        "Beschreibung",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Beschreibung",
+    )
+    use_address = BooleanField(
+        "Adresse verwenden",
+        validators=[],
+        description="Adresse verwenden",
+    )
+    country = StringField("Land", description="Land")
+    city = StringField("Stadt", description="Stadt")
+    zip_code = StringField("Postleitzahl", description="Postleitzahl")
+    street = StringField("Straße", description="Straße")
+    house_number = StringField("Hausnummer", description="Hasunummer")
+
+
+class AddAttendeeForm(FlaskForm):
     pass

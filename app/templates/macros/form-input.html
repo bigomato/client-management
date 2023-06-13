@@ -29,3 +29,13 @@
     {% endif %}
 </div>
 {% endmacro %}
+
+
+{% macro checkboxinput(field) %}
+<div class="form-control">
+    <label class="cursor-pointer label">
+        <span class="label-text">{{ field.label }}</span>
+        {{ field(class="checkbox checkbox-accent") }}
+    </label>
+</div>
+{% endmacro %}

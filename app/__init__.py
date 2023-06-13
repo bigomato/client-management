@@ -16,12 +16,14 @@ def create_app():
     from .views.lawyers import lawyers
     from .views.cases import cases
     from .views.persons import persons
+    from .views.trials import trials
 
     app.register_blueprint(main)
     app.register_blueprint(clients)
     app.register_blueprint(lawyers)
     app.register_blueprint(cases)
     app.register_blueprint(persons)
+    app.register_blueprint(trials)
     from app.models.models import (
         attends,
         representing,
