@@ -66,6 +66,18 @@
                     <div>
                         {{forminput(form.street)}}
                         {{forminput(form.house_number)}}
+                        <div class="form-control">
+
+                            <label class="label label-text">Existierende Adresse wählen</label>
+                            <select class="select select-bordered w-full max-w-xs" name="address">
+
+                                {% for address in form.address.choices %}
+                                <option value="{{address[0]}}"> {{address[1]}}
+
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

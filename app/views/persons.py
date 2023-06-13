@@ -17,6 +17,12 @@ def create_person():
     case_id = request.args.get("case_id")
     case = Case.query.filter_by(id=case_id).first()
     role = request.args.get("role")
+    addresses = db.session.query(Address).all()
+    print("1")
+    default = ("Appletree", "Keine Adresse")
+    form.address.choices = [default] + [
+        (address.id, str(address)) for address in addresses
+    ]
     if not case and case_id not in ["", None]:
         flash(
             "Du hast versucht eine Person zu einem Fall hinzuzufügen, der nicht existiert.",
@@ -36,14 +42,21 @@ def create_person():
             "danger",
         )
         return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+    print("2")
+    print(form.errors)
     if form.validate_on_submit():
-        a = Address(
-            city=form.city.data,
-            street=form.street.data,
-            house_number=form.house_number.data,
-            zip_code=form.zip_code.data,
-            country=form.country.data,
-        )
+        print("3")
+        if form.address.data != "Appletree":
+            a = db.session.query(Address).get_or_404(form.address.data)
+            print("using existing address")
+        else:
+            a = Address(
+                city=form.city.data,
+                street=form.street.data,
+                house_number=form.house_number.data,
+                zip_code=form.zip_code.data,
+                country=form.country.data,
+            )
 
         p = Person(
             name=form.name.data,
@@ -65,21 +78,20 @@ def create_person():
         )
 
         # check if they wanted to add a person to a case
-        if case_id != "":
-            inv = Involved(
-                case_id=case_id,
-                person=p,
-                role=role,
-            )
-            db.session.add(inv)
+        # if case_id != "":
+        #     inv = Involved(
+        #         case_id=case_id,
+        #         person=p,
+        #         role=role,
+        #     )
+        #     db.session.add(inv)
 
         db.session.add_all([a, p, ci])
         db.session.commit()
 
-        if case_id != "":
-            flash("Die Person wurde erfolgreich hinzugefügt.", "success")
-            return redirect(url_for("cases.edit_case_involved", case_id=case_id))
-
+        # if case_id != "":
+        #     flash("Die Person wurde erfolgreich hinzugefügt.", "success")
+        #     return redirect(url_for("cases.edit_case_involved", case_id=case_id))
     return render_template("create_person.html", form=form, type=type)
 
 

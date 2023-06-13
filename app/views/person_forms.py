@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, EmailField
+from wtforms import StringField, DateField, EmailField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 
 
@@ -25,10 +25,10 @@ class CreatePersonForm(FlaskForm):
         validators=[DataRequired(), Email(), Length(min=1, max=50)],
         description="E-mail Addresse",
     )
-    country = StringField("Land", validators=[DataRequired()], description="Land")
-    city = StringField("Stadt", validators=[DataRequired()], description="Stadt")
-    zip_code = StringField(
-        "Postleitzahl", validators=[DataRequired()], description="Postleitzahl"
-    )
+    country = StringField("Land", description="Land")
+    city = StringField("Stadt", description="Stadt")
+    zip_code = StringField("Postleitzahl", description="Postleitzahl")
     street = StringField("Straße", description="Straße")
-    house_number = StringField("Hausnummer", description="Hasunummer")
+    house_number = StringField("Hausnummer", description="Hausnummer")
+
+    address = SelectField("Address")

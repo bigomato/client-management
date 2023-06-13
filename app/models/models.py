@@ -184,7 +184,9 @@ class Address(db.Model):
         )
 
     def __str__(self):
-        return "{}, {} {}".format(self.country, self.city, self.zip_code)
+        return "{}, {} {}, {} {}".format(
+            self.country, self.city, self.zip_code, self.street, self.house_number
+        )
 
 
 class ContactInfo(db.Model):
