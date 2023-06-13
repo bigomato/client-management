@@ -91,6 +91,9 @@ def create_person():
         if case_id is not None:
             flash("Die Person wurde erfolgreich hinzugefügt.", "success")
             return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+        else:
+            flash("Die Person wurde erfolgreich hinzugefügt.", "success")
+            return redirect(url_for("persons.person", person_id=p.id))
     return render_template("create_person.html", form=form, type=type)
 
 
