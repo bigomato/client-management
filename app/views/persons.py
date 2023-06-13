@@ -35,7 +35,6 @@ def create_person():
             "danger",
         )
         return redirect(url_for("cases.edit_case_involved", case_id=case_id))
-    # check if the role is valid using the Enum
     if case and role not in [role.name for role in InvolvementRole]:
         flash(
             "Du hast versucht eine Person zu einem Fall hinzuzufügen, mit einer ungültigen Rolle.",
@@ -78,20 +77,20 @@ def create_person():
         )
 
         # check if they wanted to add a person to a case
-        # if case_id != "":
-        #     inv = Involved(
-        #         case_id=case_id,
-        #         person=p,
-        #         role=role,
-        #     )
-        #     db.session.add(inv)
+        if case_id is not None:
+            inv = Involved(
+                case_id=case_id,
+                person=p,
+                role=role,
+            )
+            db.session.add(inv)
 
         db.session.add_all([a, p, ci])
         db.session.commit()
 
-        # if case_id != "":
-        #     flash("Die Person wurde erfolgreich hinzugefügt.", "success")
-        #     return redirect(url_for("cases.edit_case_involved", case_id=case_id))
+        if case_id is not None:
+            flash("Die Person wurde erfolgreich hinzugefügt.", "success")
+            return redirect(url_for("cases.edit_case_involved", case_id=case_id))
     return render_template("create_person.html", form=form, type=type)
 
 
