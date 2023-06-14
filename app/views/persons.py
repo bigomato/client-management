@@ -101,3 +101,16 @@ def create_person():
 def person(person_id):
     person = db.session.query(Person).get_or_404(person_id)
     return render_template("person.html", person=person, CaseStatus=CaseStatus)
+
+
+@persons.route("/persons/delete/<int:person_id>")
+def delete_person(person_id):
+    person = db.session.query(Person).get_or_404(person_id)
+    lawyer_or_client = "lawyer" if person.our_lawyer else "client"
+    db.session.delete(person)
+    db.session.commit()
+    flash("Die Person wurde erfolgreich gelöscht.", "success")
+    if lawyer_or_client == "lawyer":
+        return redirect(url_for("lawyers.lawyers_page"))
+    else:
+        return redirect(url_for("clients.clients_page"))
