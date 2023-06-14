@@ -60,7 +60,7 @@ class UploadDocumentForm(FlaskForm):
     )
     description = StringField(
         "Beschreibung",
-        validators=[DataRequired(), Length(min=1, max=50)],
+        validators=[DataRequired(), Length(min=1)],
         description="Beschreibung",
     )
 
