@@ -17,8 +17,6 @@ trials = Blueprint("trials", __name__)
 )
 def delete_trial(trial_id):
     trial = db.session.query(Trial).get_or_404(trial_id)
-    if trial.judgement:
-        db.session.delete(trial.judgement)
     db.session.delete(trial)
     db.session.commit()
     flash("Die Verhandlung wurde erfolgreich gelöscht.", "success")

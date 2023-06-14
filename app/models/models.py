@@ -152,7 +152,9 @@ class Person(db.Model):
     adress_id = Column(Integer, ForeignKey("address.id"), nullable=True)
     our_lawyer = Column(Boolean, nullable=False, default=False)
     our_client = Column(Boolean, nullable=False, default=False)
-    contactinfos = relationship("ContactInfo", backref="person")
+    contactinfos = relationship(
+        "ContactInfo", backref="person", cascade="all, delete-orphan"
+    )
     involvements = relationship("Involved", backref="person")
 
     def __repr__(self):
@@ -211,9 +213,9 @@ class Case(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
     description = Column(String, nullable=False)
-    involved = relationship("Involved", backref="case")
-    documents = relationship("Document", backref="case")
-    trials = relationship("Trial", backref="case")
+    involved = relationship("Involved", backref="case", cascade="all, delete-orphan")
+    documents = relationship("Document", backref="case", cascade="all, delete-orphan")
+    trials = relationship("Trial", backref="case", cascade="all, delete-orphan")
     case_status = Column(CaseStatusType, nullable=False, default=CaseStatus.ongoing)
 
     def __repr__(self):
@@ -282,11 +284,9 @@ class Trial(db.Model):
     description = Column(String, nullable=False)
     date = Column(Date, nullable=False)
     address_id = Column(Integer, ForeignKey("address.id"), nullable=True)
+    judgement_id = Column(Integer, ForeignKey("judgement.id"), nullable=True)
 
     attendees = relationship("Involved", secondary=attends, back_populates="attendees")
-    judgement = relationship(
-        "Judgement", uselist=False, backref=backref("trial", cascade="all, delete")
-    )
 
     def __repr__(self):
         return "<Trial(name='{}', description='{}')>".format(
@@ -321,10 +321,16 @@ class Judgement(db.Model):
     date = Column(Date, nullable=False)
     description = Column(String, nullable=False)
     document_id = Column(Integer, ForeignKey("document.id"), nullable=True)
-    trial_id = Column(Integer, ForeignKey("trial.id"), nullable=False)
     judgement = Column(JudgementTypeType, nullable=True)
-    # FIXME: add a proper connection between trial and judgement so you can use judgement.trial
     document = relationship("Document", uselist=False, backref="judgement")
+
+    trial_id = Column(Integer, ForeignKey("trial.id"), nullable=True)
+    trial = relationship(
+        "Trial",
+        uselist=False,
+        backref=backref("judgement", uselist=False, cascade="all, delete-orphan"),
+        foreign_keys=[trial_id],
+    )
 
     def __repr__(self):
         return "<Judgement(type='{}', date='{}')>".format(self.type, self.date)
