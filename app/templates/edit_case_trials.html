@@ -87,7 +87,9 @@
             </div>
             {% endif %}
             {{ trial.description }} <br>
+            {% if trial.address %}
             {{ trial.address }}
+            {% endif %}
 
             {% if trial.attendees != [] %}
             <table class="table table-sm">

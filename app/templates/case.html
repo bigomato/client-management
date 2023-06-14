@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        <div class="card bg-base-200 shadow">
+        <div class="card bg-base-200 shadow h-fit">
             <div class="card-body">
                 <h2 class="card-title">Verhandlungen</h2>
                 <div class="overflow-x-auto">
@@ -134,7 +134,9 @@
                                 </div>
                                 {% endif %}
                                 {{ trial.description }} <br>
+                                {% if trial.address %}
                                 {{ trial.address }}
+                                {% endif %}
 
                                 {% if trial.attendees != [] %}
                                 <table class="table table-sm">
