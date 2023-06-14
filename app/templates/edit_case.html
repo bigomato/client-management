@@ -15,7 +15,12 @@
             </div>
         </div>
         <div class="text-end">
-            <button class="btn btn-success">Speichern</button>
+            <div class="join">
+                <button class="btn btn-success join-item">Speichern</button>
+                <button class="btn btn-error join-item" formaction="{{
+                    url_for('cases.delete_case', case_id=case.id)
+                }}">Löschen</button>
+            </div>
         </div>
     </div>
     <div class="tabs tabs-boxed w-fit mx-auto mt-4">

@@ -356,3 +356,16 @@ def create_case():
         flash("Der Fall wurde erfolgreich angelegt.", "success")
         return redirect(url_for("cases.edit_case_involved", case_id=case.id))
     return render_template("create_case.html", form=form)
+
+
+# delete case
+@cases.route(
+    "/cases/<int:case_id>/delete/",
+    methods=["POST"],
+)
+def delete_case(case_id):
+    case = db.session.query(Case).get_or_404(case_id)
+    db.session.delete(case)
+    db.session.commit()
+    flash("Der Fall wurde erfolgreich gelöscht.", "success")
+    return redirect(url_for("cases.cases_page"))
