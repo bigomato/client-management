@@ -1,4 +1,5 @@
 {% macro feedback(singular, plural, search, pagination) %}
+{% if search|length != 0 %}
 {% if pagination.total == 1 %}
 <span>
     Es wurde {{ pagination.total }} {{singular}} mit dem Suchbegriff "{{ search }}" gefunden.
@@ -7,6 +8,7 @@
 <span>
     Es wurden {{ pagination.total }} {{plural}} mit dem Suchbegriff "{{ search }}" gefunden.
 </span>
+{% endif %}
 {% endif %}
 {% endmacro %}
 
