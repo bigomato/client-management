@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, DateField
+from wtforms import StringField, BooleanField, DateField, SelectField
 from wtforms.validators import DataRequired, Length
+
+from app.models.models import JudgemenType
 
 
 class EditTrialForm(FlaskForm):
@@ -29,3 +31,18 @@ class EditTrialForm(FlaskForm):
     zip_code = StringField("Postleitzahl", description="Postleitzahl")
     street = StringField("Straße", description="Straße")
     house_number = StringField("Hausnummer", description="Hasunummer")
+
+    judgement_description = StringField(
+        "Beschreibung",
+        description="Beschreibung",
+    )
+    judgement = SelectField(
+        "Urteil",
+        choices=[(status.name, status.display()) for status in JudgemenType],
+        description="Urteil",
+    )
+    document = SelectField(
+        "Dokument",
+        choices=[],
+        description="Dokument",
+    )
