@@ -24,6 +24,19 @@ class EditCaseFrom(FlaskForm):
     )
 
 
+class CreateCaseForm(FlaskForm):
+    name = StringField(
+        "Name",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Name",
+    )
+    description = StringField(
+        "Beschreibung",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Beschreibung",
+    )
+
+
 class AddInvolvedPerson(FlaskForm):
     person = SelectField(
         "Person",

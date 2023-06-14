@@ -341,3 +341,18 @@ def remove_attendee_from_trial(case_id, trial_id, involved_id):
     return redirect(
         url_for("cases.edit_case_trial_attendees", case_id=case_id, trial_id=trial_id)
     )
+
+
+@cases.route(
+    "/cases/create/",
+    methods=["GET", "POST"],
+)
+def create_case():
+    form = CreateCaseForm()
+    if form.validate_on_submit():
+        case = Case(name=form.name.data, description=form.description.data)
+        db.session.add(case)
+        db.session.commit()
+        flash("Der Fall wurde erfolgreich angelegt.", "success")
+        return redirect(url_for("cases.edit_case_involved", case_id=case.id))
+    return render_template("create_case.html", form=form)

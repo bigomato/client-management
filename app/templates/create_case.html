@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Fall Anlegen
+{% endblock %}
+{% block content %}
+{% from 'macros/form-input.html' import forminput, fullforminput %}
+<form action="" method="POST" class="mb-4">
+    {{ form.csrf_token }}
+    <div class="grid grid-cols-3">
+        <div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-accent text-center">
+                Fall Anlegen
+            </div>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-success">Speichern</button>
+        </div>
+    </div>
+
+    <div class="card mt-5 mx-auto shadow bg-base-200">
+        <div class="card-body">
+            <h2 class="card-title">Informationen zum Fall</h2>
+            <div>
+
+                {{ fullforminput(form.name) }}
+
+                {{ fullforminput(form.description) }}
+
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
