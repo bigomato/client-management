@@ -365,6 +365,12 @@ def create_case():
 )
 def delete_case(case_id):
     case = db.session.query(Case).get_or_404(case_id)
+    for doc in case.documents:
+        db.session.delete(doc)
+    for trial in case.trials:
+        db.session.delete(trial)
+    for inv in case.involved:
+        db.session.delete(inv)
     db.session.delete(case)
     db.session.commit()
     flash("Der Fall wurde erfolgreich gelöscht.", "success")
