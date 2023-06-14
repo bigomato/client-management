@@ -221,6 +221,22 @@ def download_document(case_id, document_id):
 
 
 @cases.route(
+    "/cases/<int:case_id>/edit/documents/delete/<int:document_id>", methods=["POST"]
+)
+def delete_document(case_id, document_id):
+    doc = db.session.query(Document).get_or_404(document_id)
+    path = doc.path
+    if not os.path.exists(path):
+        flash("Das Dokument existiert nicht mehr.", "warning")
+        return redirect(url_for("cases.edit_case_documents", case_id=case_id))
+    os.remove(path)
+    db.session.delete(doc)
+    db.session.commit()
+    flash("Das Dokument wurde erfolgreich gelöscht.", "success")
+    return redirect(url_for("cases.edit_case_documents", case_id=case_id))
+
+
+@cases.route(
     "/cases/<int:case_id>/edit/trials/",
     methods=["GET", "POST"],
 )

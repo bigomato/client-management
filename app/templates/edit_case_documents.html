@@ -41,7 +41,7 @@
                                 {% for doc in documents %}
 
                                 {{ pdf_file(doc.name, doc.date, doc.description, url_for('cases.download_document',
-                                case_id=case.id, document_id=doc.id))}}
+                                case_id=case.id, document_id=doc.id), case_id=case.id, doc_id=doc.id)}}
                                 {% endfor %}
                             </ul>
                         </details>
