@@ -3,7 +3,7 @@
 {{ company_name }} - Person
 {% endblock %}
 {% block content %}
-<div class="grid grid-cols-3 mb-4">
+<div class="grid grid-cols-3">
     <div class="badge badge-accent">{% if person.our_client == True %}
         Mandant
         {% elif person.our_lawyer == True %}
@@ -50,7 +50,7 @@
     </div>
 </div>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-2 gap-4 mb-4">
     <div>
         <div class="card shadow bg-base-200 mt-5">
             <div class="card-body h-fit">
@@ -174,7 +174,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 
 
