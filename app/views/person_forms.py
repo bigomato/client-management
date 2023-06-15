@@ -32,3 +32,27 @@ class CreatePersonForm(FlaskForm):
     house_number = StringField("Hausnummer", description="Hausnummer")
 
     address = SelectField("Address")
+
+
+class EditPersonForm(FlaskForm):
+    name = StringField(
+        "Vorname",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Vorname",
+    )
+    surname = StringField(
+        "Nachname",
+        validators=[DataRequired(), Length(min=1, max=50)],
+        description="Nachname",
+    )
+    birthdate = DateField("Geburtstag", validators=[DataRequired()])
+    phone_number = StringField(
+        "Telefonnummer",
+        validators=[DataRequired(), Length(min=7, max=50)],
+        description="Telefonnummer",
+    )
+    email = EmailField(
+        "E-mail",
+        validators=[DataRequired(), Email(), Length(min=1, max=50)],
+        description="E-mail Addresse",
+    )

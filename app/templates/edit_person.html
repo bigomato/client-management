@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ company_name }} - Mandanten Bearbeiten
+{% endblock %}
+{% block content %}
+{% from 'macros/form-input.html' import forminput, fullforminput %}
+<form action="" method="POST" class="mb-4">
+    {{ form.csrf_token }}
+    <div class="grid grid-cols-3">
+        <div>
+        </div>
+        <div>
+            <div class="text-4xl font-bold text-accent text-center">
+                Person Bearbeiten
+            </div>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-success">Speichern</button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div class="card shadow bg-base-200 mt-5">
+            <div class="card-body">
+                <div class="card-title">Kontaktdaten</div>
+                {{fullforminput(form.phone_number)}}
+                {{fullforminput(form.email)}}
+            </div>
+        </div>
+        <div class="card shadow bg-base-200 mt-5">
+            <div class="card-body">
+                <h2 class="card-title">Persönliche informationen</h2>
+                <div class="grid grid-cols-2 gap-4 ">
+                    <div class="grid-cols-2 flex-col">
+                        {{forminput(form.name)}}
+                    </div>
+                    <div class="grid-cols-2 flex-col">
+                        {{forminput(form.surname)}}
+                    </div>
+                    <div class="grid-cols-2 ">
+                        {{forminput(form.birthdate)}}
+                    </div>
+                    <div class="form-control">
+                        <label class="label label-text">Was möchtest du Anlegen?</label>
+                        <select class="select select-bordered w-full max-w-xs" name="lawyer_or_client">
+                            <option disabled selected>Was möchtest du Anlegen?</option>
+                            <option {% if type=="lawyer" %} selected {% endif %} value="lawyer">Anwalt</option>
+                            <option {% if type=="client" %} selected {% endif %} value="client">Mandant</option>
+                            <option value="">Anderes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

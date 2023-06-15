@@ -114,3 +114,27 @@ def delete_person(person_id):
         return redirect(url_for("lawyers.lawyers_page"))
     else:
         return redirect(url_for("clients.clients_page"))
+
+
+@persons.route("/persons/<int:person_id>/edit", methods=["GET", "POST"])
+def edit_person(person_id):
+    person = db.session.query(Person).get_or_404(person_id)
+    form = EditPersonForm()
+    if form.validate_on_submit():
+        person.name = form.name.data
+        person.surname = form.surname.data
+        person.birthdate = form.birthdate.data
+
+        ci = ContactInfo.query.filter_by(person_id=person.id).first()
+        ci.phone_number = form.phone_number.data
+        ci.email = form.email.data
+        db.session.commit()
+        flash("Die Person wurde erfolgreich bearbeitet.", "success")
+        return redirect(url_for("persons.person", person_id=person.id))
+    elif request.method == "GET":
+        form.name.data = person.name
+        form.surname.data = person.surname
+        form.birthdate.data = person.birthdate
+        form.phone_number.data = person.contactinfos[0].phone_number
+        form.email.data = person.contactinfos[0].email
+    return render_template("edit_person.html", form=form, person=person)
